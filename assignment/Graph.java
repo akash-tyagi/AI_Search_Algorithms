@@ -55,7 +55,15 @@ public class Graph {
 
 	public static void main(String[] args) throws IOException {
 		Graph graph = new Graph();
-		graph.generate_graph_from_file("src/assignment/ATM.graph.txt");
+		graph.generate_graph_from_file(args[0]);
+
+		Frontier frontier = new MyQueue();
+		// TODO: Get the inputs from the arguments
+		Node initial_state = new Node(0, graph);
+		Vertex goal_vertex = graph.vertices.get(80);
+
+		Node result_state = Node.Search(initial_state, goal_vertex, frontier);
+		Node.traceback(result_state);
 	}
 
 }
