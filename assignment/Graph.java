@@ -35,6 +35,7 @@ public class Graph {
 				vertices.get(vertex1_id).add_edge(edge);
 				vertices.get(vertex2_id).add_edge(edge);
 			} else {
+				//Read vertices from file
 				if (words[0].equals("vertices:")) {
 					vertexCount = Integer.valueOf(words[1]);
 					continue;
