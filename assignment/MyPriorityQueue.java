@@ -1,28 +1,33 @@
 package assignment;
 
 import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class MyPriorityQueue extends Frontier {
 
+	PriorityQueue<Node> priority_queue;
+
+	public MyPriorityQueue(Vertex goal_vertex) {
+		Comparator<Node> comparator = new EuclideanComparator(goal_vertex);
+		this.priority_queue = new PriorityQueue<Node>(1, comparator);
+	}
+
 	@Override
 	public Node pop() {
-		// TODO Auto-generated method stub
-		return null;
+		return priority_queue.poll();
 	}
 
 	@Override
 	public boolean is_empty() {
-		// TODO Auto-generated method stub
-		return false;
+		return priority_queue.isEmpty();
 	}
 
 	@Override
 	public boolean push(Node node) {
-		// TODO Auto-generated method stub
-		return false;
+		return priority_queue.add(node);
 	}
 
-	public class EuclideanComparator implements Comparator<Vertex> {
+	public class EuclideanComparator implements Comparator<Node> {
 		Vertex goal_vertex;
 
 		public EuclideanComparator(Vertex goal_vertex) {
@@ -30,15 +35,20 @@ public class MyPriorityQueue extends Frontier {
 		}
 
 		@Override
-		public int compare(Vertex v1, Vertex v2) {
-			double d1 = eucliden_distance(v1, goal_vertex);
-			double d2 = eucliden_distance(v2, goal_vertex);
+		public int compare(Node n1, Node n2) {
+			Node goal_node = new Node(goal_vertex.id, n1.graph);
+			double d1 = eucliden_distance(n1, goal_node);
+			double d2 = eucliden_distance(n2, goal_node);
 			return Double.compare(d1, d2);
 		}
 
-		private double eucliden_distance(Vertex v1, Vertex v2) {
-			return Math.sqrt(Math.pow((v1.x - v2.x), 2)
-					+ Math.pow((v1.y - v2.y), 2));
+		private double eucliden_distance(Node n1, Node n2) {
+			int v1_x = n1.graph.map_id_vertex.get(n1.vertex_id).x;
+			int v1_y = n1.graph.map_id_vertex.get(n1.vertex_id).y;
+			int v2_x = n2.graph.map_id_vertex.get(n2.vertex_id).x;
+			int v2_y = n2.graph.map_id_vertex.get(n2.vertex_id).y;
+			return Math.sqrt(Math.pow((v1_x - v2_x), 2)
+					+ Math.pow((v1_y - v2_y), 2));
 		}
 	}
 }
