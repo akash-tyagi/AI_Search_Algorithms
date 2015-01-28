@@ -9,10 +9,8 @@ public class Node {
 	public int vertex_id;
 	public int depth;
 	public Node parent;
-	public float heur;
+	public double heur;
 	public Graph graph;
-
-	public static Map<Integer, Boolean> visited;
 
 	public Node(int vertex_id, Graph graph) {
 		this.vertex_id = vertex_id;
@@ -47,55 +45,88 @@ public class Node {
 		return successors;
 	}
 
-	public static void traceback(Node node) {
-		if (node == null)
-			return;
-		
-		System.out.println("Solution path:");
-		System.out.println("Path Length:" + node.depth);
-		while (node != null) {
-			Vertex v = node.graph.map_id_vertex.get(node.vertex_id);
-			System.out.println("vertex " + node.vertex_id + " (" + v.x + ","
-					+ v.y + ")");
-			node = node.parent;
-		}
+	public void calculate_heur(Vertex goal_vertex) {
+		Vertex v = graph.map_id_vertex.get(vertex_id);
+		heur = Math.sqrt(Math.pow((v.x - goal_vertex.x), 2)
+				+ Math.pow((v.y - goal_vertex.y), 2));
 	}
 
-	public static Node Search(Node initial_state, Vertex goal_vertex,
-			int frontier_value) {
-		visited = new HashMap<Integer, Boolean>();
+	public static class Searching {
+		private Map<Integer, Boolean> visited;
+		private int total_iter;
+		private int max_frontier_size;
+		private String search_type;
 
-		Frontier frontier = get_frontier(frontier_value, goal_vertex);
-		frontier.push(initial_state);
-		visited.put(initial_state.vertex_id, true);
+		private void initialize() {
+			visited = new HashMap<Integer, Boolean>();
+			total_iter = 0;
+			max_frontier_size = 1;
+			search_type = null;
+		}
 
-		while (frontier.is_empty() != true) {
-			Node front_node = frontier.pop();
-
-			if (front_node.vertex_id == goal_vertex.id) {
-				return front_node;
+		public void traceback(Node node) {
+			if (node == null)
+				return;
+			Node target = node;
+			System.out.println("Solution path:");
+			while (node != null) {
+				Vertex v = node.graph.map_id_vertex.get(node.vertex_id);
+				System.out.println("vertex " + node.vertex_id + " (" + v.x
+						+ "," + v.y + ")");
+				node = node.parent;
 			}
 
-			List<Node> successors = front_node.successors();
-			for (Node successor : successors) {
-				if (!visited.containsKey(successor.vertex_id)) {
-					frontier.push(successor);
-					visited.put(successor.vertex_id, true);
+			System.out.println("\nSearch algorithm:" + search_type);
+			System.out.println("Total Iterations:" + total_iter);
+			System.out.println("Maximum Frontier Size:" + max_frontier_size);
+			System.out.println("Vertices Visited:" + visited.size() + "/"
+					+ target.graph.vertexCount);
+			System.out.println("Path Length:" + target.depth);
+		}
+
+		public Node Search(Node initial_state, Vertex goal_vertex,
+				int frontier_value) {
+			initialize();
+			Frontier frontier = get_frontier(frontier_value, goal_vertex);
+			frontier.push(initial_state);
+			visited.put(initial_state.vertex_id, true);
+
+			while (frontier.is_empty() != true) {
+				Node front_node = frontier.pop();
+				total_iter++;
+
+				if (front_node.vertex_id == goal_vertex.id) {
+					return front_node;
+				}
+
+				List<Node> successors = front_node.successors();
+				for (Node successor : successors) {
+					if (!visited.containsKey(successor.vertex_id)) {
+						successor.calculate_heur(goal_vertex);
+						frontier.push(successor);
+						visited.put(successor.vertex_id, true);
+
+						if (frontier.get_size() > max_frontier_size)
+							max_frontier_size = frontier.get_size();
+					}
 				}
 			}
+			return null;
 		}
-		return null;
-	}
 
-	public static Frontier get_frontier(int value, Vertex goal_vertex) {
-		Frontier frontier = null;
-		if (value == FrontierType.QUEUE.get_value()) {
-			frontier = new MyQueue();
-		} else if (value == FrontierType.STACK.get_value()) {
-			frontier = new MyStack();
-		} else {
-			frontier = new MyPriorityQueue(goal_vertex);
+		public Frontier get_frontier(int value, Vertex goal_vertex) {
+			Frontier frontier = null;
+			if (value == FrontierType.QUEUE.get_value()) {
+				frontier = new MyQueue();
+				search_type = FrontierType.QUEUE.to_string();
+			} else if (value == FrontierType.STACK.get_value()) {
+				frontier = new MyStack();
+				search_type = FrontierType.STACK.to_string();
+			} else {
+				frontier = new MyPriorityQueue(goal_vertex);
+				search_type = FrontierType.PRIORITY_QUEUE.to_string();
+			}
+			return frontier;
 		}
-		return frontier;
 	}
 }

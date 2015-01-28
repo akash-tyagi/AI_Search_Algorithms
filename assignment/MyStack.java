@@ -25,4 +25,10 @@ public class MyStack extends Frontier {
 		return stack.push(node) != null;
 	}
 
+	@Override
+	public int get_size() {
+		// TODO Auto-generated method stub
+		return stack.size();
+	}
+
 }

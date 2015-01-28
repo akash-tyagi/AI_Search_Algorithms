@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import assignment.Node.Searching;
+
 public class Graph {
 	public int vertexCount;
 	public int edgeCount;
@@ -68,14 +70,16 @@ public class Graph {
 
 		// TODO: Get the inputs from the arguments
 		int frontier_value = 1;
-		
-		int start_vertex_id = graph.map_cordi_id.get(1 +":"+ 20);
+
+		int start_vertex_id = graph.map_cordi_id.get(1 + ":" + 20);
 		Node initial_state = new Node(start_vertex_id, graph);
-		
-//		Vertex goal_vertex = graph.map_id_vertex.get(62);
+
+		// Vertex goal_vertex = graph.map_id_vertex.get(62);
 		Vertex goal_vertex = graph.get_vertex_from_cordi(20, 1);
 
-		Node result_state = Node.Search(initial_state, goal_vertex, frontier_value);
-		Node.traceback(result_state);
+		Searching searching = new Searching();
+		Node result_state = searching.Search(initial_state, goal_vertex,
+				frontier_value);
+		searching.traceback(result_state);
 	}
 }

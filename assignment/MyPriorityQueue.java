@@ -8,7 +8,7 @@ public class MyPriorityQueue extends Frontier {
 	PriorityQueue<Node> priority_queue;
 
 	public MyPriorityQueue(Vertex goal_vertex) {
-		Comparator<Node> comparator = new EuclideanComparator(goal_vertex);
+		Comparator<Node> comparator = new EuclideanComparator();
 		this.priority_queue = new PriorityQueue<Node>(1, comparator);
 	}
 
@@ -28,27 +28,16 @@ public class MyPriorityQueue extends Frontier {
 	}
 
 	public class EuclideanComparator implements Comparator<Node> {
-		Vertex goal_vertex;
-
-		public EuclideanComparator(Vertex goal_vertex) {
-			this.goal_vertex = goal_vertex;
-		}
 
 		@Override
 		public int compare(Node n1, Node n2) {
-			Node goal_node = new Node(goal_vertex.id, n1.graph);
-			double d1 = eucliden_distance(n1, goal_node);
-			double d2 = eucliden_distance(n2, goal_node);
-			return Double.compare(d1, d2);
+			return Double.compare(n1.heur, n2.heur);
 		}
+	}
 
-		private double eucliden_distance(Node n1, Node n2) {
-			int v1_x = n1.graph.map_id_vertex.get(n1.vertex_id).x;
-			int v1_y = n1.graph.map_id_vertex.get(n1.vertex_id).y;
-			int v2_x = n2.graph.map_id_vertex.get(n2.vertex_id).x;
-			int v2_y = n2.graph.map_id_vertex.get(n2.vertex_id).y;
-			return Math.sqrt(Math.pow((v1_x - v2_x), 2)
-					+ Math.pow((v1_y - v2_y), 2));
-		}
+	@Override
+	public int get_size() {
+		// TODO Auto-generated method stub
+		return priority_queue.size();
 	}
 }

@@ -1,2 +1,28 @@
 # AI_Search_Algorithms
-Comparing BFS, DFS and GBFS on a simple navigation problem
+Goal is to compare the performance of Breadth-First-Search, Depth-first-Search and Greedy Best-First-Search on a given navigation problem i.e path finding.
+
+For GBFS, the heuristic used for implementing the priority queue is Straight Line Distance (Euclidean Distance).
+
+The model used for testing purposes is given in file ATM.graph.txt which looks like the figure given in file NavigationMap.png
+
+In general, any type of txt file can be given, only thing to make sure is that the format is same as given in ATM.graph.txt
+ie
+
+vertices: <total_vertices>
+<vertex ID> <X coordinate> <Y coordinate>
+...
+edges: <total_edges>
+<edge id> <Vertex Id> <Vertex ID>
+...
+
+the graph considered here is undirected. ex:
+vertices: 275
+0 1 1
+1 1 2
+2 1 3
+...
+edges: 641
+0 17 18
+1 37 38
+2 56 57
+...

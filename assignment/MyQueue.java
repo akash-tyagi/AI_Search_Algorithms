@@ -25,4 +25,9 @@ public class MyQueue extends Frontier {
 	public boolean push(Node node) {
 		return queue.add(node);
 	}
+
+	@Override
+	public int get_size() {
+		return queue.size();
+	}
 }
