@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 public class Node {
 	public int vertex_id;
@@ -65,15 +66,21 @@ public class Node {
 		}
 
 		public void traceback(Node node) {
+			Stack<Node> stack = new Stack<Node>();
 			if (node == null)
 				return;
 			Node target = node;
-			System.out.println("Solution path:");
 			while (node != null) {
+				stack.add(node);
+				node = node.parent;
+			}
+
+			System.out.println("Solution path:");
+			while (stack.isEmpty() == false) {
+				node = stack.pop();
 				Vertex v = node.graph.map_id_vertex.get(node.vertex_id);
 				System.out.println("vertex " + node.vertex_id + " (" + v.x
 						+ "," + v.y + ")");
-				node = node.parent;
 			}
 
 			System.out.println("\nSearch algorithm:" + search_type);

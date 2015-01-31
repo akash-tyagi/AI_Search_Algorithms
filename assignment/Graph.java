@@ -65,17 +65,19 @@ public class Graph {
 	}
 
 	public static void main(String[] args) throws IOException {
+
+		int frontier_value = Integer.parseInt(args[1]);
+		int x0 = Integer.parseInt(args[2]);
+		int y0 = Integer.parseInt(args[3]);
+		int x1 = Integer.parseInt(args[4]);
+		int y1 = Integer.parseInt(args[5]);
+
 		Graph graph = new Graph();
 		graph.generate_graph_from_file(args[0]);
 
-		// TODO: Get the inputs from the arguments
-		int frontier_value = 1;
-
-		int start_vertex_id = graph.map_cordi_id.get(1 + ":" + 20);
+		int start_vertex_id = graph.map_cordi_id.get(x0 + ":" + y0);
 		Node initial_state = new Node(start_vertex_id, graph);
-
-		// Vertex goal_vertex = graph.map_id_vertex.get(62);
-		Vertex goal_vertex = graph.get_vertex_from_cordi(20, 1);
+		Vertex goal_vertex = graph.get_vertex_from_cordi(x1, y1);
 
 		Searching searching = new Searching();
 		Node result_state = searching.Search(initial_state, goal_vertex,
