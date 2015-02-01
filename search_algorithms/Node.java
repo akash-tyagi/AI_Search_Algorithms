@@ -29,6 +29,10 @@ public class Node {
 		this.graph = graph;
 	}
 
+	public Vertex get_vertex() {
+		return graph.map_id_vertex.get(vertex_id);
+	}
+
 	public List<Node> successors() {
 		List<Node> successors = new ArrayList<Node>();
 		List<Edge> edges = graph.map_id_vertex.get(vertex_id).edges;
@@ -50,6 +54,7 @@ public class Node {
 		Vertex v = graph.map_id_vertex.get(vertex_id);
 		heur = Math.sqrt(Math.pow((v.x - goal_vertex.x), 2)
 				+ Math.pow((v.y - goal_vertex.y), 2));
+		heur = (double) Math.round(heur * 10) / 10;
 	}
 
 	public static class Searching {
@@ -75,7 +80,7 @@ public class Node {
 				node = node.parent;
 			}
 
-			System.out.println("Solution path:");
+			System.out.println("\n\nSolution path:");
 			while (stack.isEmpty() == false) {
 				node = stack.pop();
 				Vertex v = node.graph.map_id_vertex.get(node.vertex_id);
@@ -93,7 +98,19 @@ public class Node {
 
 		public Node Search(Node initial_state, Vertex goal_vertex,
 				int frontier_value) {
+			if (Graph.debug_flag) {
+				System.out.println("Vertices="
+						+ initial_state.graph.vertexCount + ", Edges="
+						+ initial_state.graph.edgeCount);
+				Vertex initial = initial_state.get_vertex();
+				System.out.println("start= (" + initial.x + "," + initial.y
+						+ "), goal= (" + goal_vertex.x + "," + goal_vertex.y
+						+ "), vertices: " + initial_state.vertex_id + " and "
+						+ goal_vertex.id);
+			}
+
 			initialize();
+			initial_state.calculate_heur(goal_vertex);
 			Frontier frontier = get_frontier(frontier_value, goal_vertex);
 			frontier.push(initial_state);
 			visited.put(initial_state.vertex_id, true);
@@ -101,6 +118,16 @@ public class Node {
 			while (frontier.is_empty() != true) {
 				Node front_node = frontier.pop();
 				total_iter++;
+
+				if (Graph.debug_flag) {
+					Vertex front_vertex = front_node.get_vertex();
+					System.out.println("iter=" + total_iter + ", frontier="
+							+ frontier.get_size() + ", popped="
+							+ front_node.vertex_id + " (" + front_vertex.x
+							+ "," + front_vertex.y + "), depth="
+							+ front_node.depth + ", dist2goal="
+							+ front_node.heur);
+				}
 
 				if (front_node.vertex_id == goal_vertex.id) {
 					return front_node;
@@ -115,6 +142,13 @@ public class Node {
 
 						if (frontier.get_size() > max_frontier_size)
 							max_frontier_size = frontier.get_size();
+
+						if (Graph.debug_flag) {
+							Vertex succ_vertex = successor.get_vertex();
+							System.out.println("Pushed " + successor.vertex_id
+									+ " (" + succ_vertex.x + ","
+									+ succ_vertex.y + ")");
+						}
 					}
 				}
 			}

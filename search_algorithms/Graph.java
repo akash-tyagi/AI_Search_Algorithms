@@ -15,6 +15,7 @@ public class Graph {
 	public int edgeCount;
 	public Map<Integer, Vertex> map_id_vertex;
 	public Map<String, Integer> map_cordi_id;
+	public static boolean debug_flag = false;
 
 	public Graph() {
 		vertexCount = edgeCount = 0;
@@ -66,11 +67,19 @@ public class Graph {
 
 	public static void main(String[] args) throws IOException {
 
+		if (args.length < 6) {
+			System.out.println("Parameters Missing");
+			System.exit(1);
+		}
+
 		int frontier_value = Integer.parseInt(args[1]);
 		int x0 = Integer.parseInt(args[2]);
 		int y0 = Integer.parseInt(args[3]);
 		int x1 = Integer.parseInt(args[4]);
 		int y1 = Integer.parseInt(args[5]);
+		if (args.length >= 7 && Integer.parseInt(args[6]) == 1) {
+			debug_flag = true;
+		}
 
 		Graph graph = new Graph();
 		graph.generate_graph_from_file(args[0]);

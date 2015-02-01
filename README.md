@@ -28,12 +28,18 @@ edges: 641
 
 <h1>How to run the Program:</h1>
 To run the program provide the following arguments<br/>
-AbsolutePath FrontierNumber StartCoordinateX StartCoordinateY GoalCoordinateX GoalCoordinateY
-Ex:/home/akash/Downloads/ATM.graph.txt 3 1 20 20 1<br/>
+AbsolutePath FrontierNumber StartCoordinateX StartCoordinateY GoalCoordinateX GoalCoordinateY DebugFlag
+Ex:/home/akash/Downloads/ATM.graph.txt 3 1 20 20 1 0<br/>
 
 <p>Frontier Types Number</p>
 <ol>
 <li>Queue: For BFS</li>
 <li>Stack: For DFS</li>
 <li>Priority Queue: For GBFS</li>
+</ol>
+
+<p>Debug Flag</p>
+<ol>
+<li value="0">Debugging Off</li>
+<li>Debugging On: will print the whole trace of the frontier working</li>
 </ol>
