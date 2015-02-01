@@ -1,4 +1,4 @@
-package assignment;
+package search_algorithms;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package assignment;
+package search_algorithms;
 
 public enum FrontierType {
 	QUEUE(1, "BFS"), STACK(2, "DFS"), PRIORITY_QUEUE(3, "GBFS");

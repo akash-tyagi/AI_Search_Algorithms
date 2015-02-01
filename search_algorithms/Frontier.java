@@ -1,4 +1,4 @@
-package assignment;
+package search_algorithms;
 
 public abstract class Frontier {
 	public abstract Node pop();

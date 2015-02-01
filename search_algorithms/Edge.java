@@ -1,4 +1,4 @@
-package assignment;
+package search_algorithms;
 
 public class Edge {
 	public int id;

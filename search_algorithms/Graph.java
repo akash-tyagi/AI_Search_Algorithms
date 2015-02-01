@@ -1,4 +1,4 @@
-package assignment;
+package search_algorithms;
 
 import java.io.IOException;
 import java.io.ObjectInputStream.GetField;
@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import assignment.Node.Searching;
+import search_algorithms.Node.Searching;
 
 public class Graph {
 	public int vertexCount;
