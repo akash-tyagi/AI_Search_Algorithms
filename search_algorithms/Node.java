@@ -62,12 +62,14 @@ public class Node {
 		private int total_iter;
 		private int max_frontier_size;
 		private String search_type;
+		private int max_depth;
 
 		private void initialize() {
 			visited = new HashMap<Integer, Boolean>();
 			total_iter = 0;
 			max_frontier_size = 1;
 			search_type = null;
+			max_depth = 0;
 		}
 
 		public void traceback(Node node) {
@@ -94,6 +96,7 @@ public class Node {
 			System.out.println("Vertices Visited:" + visited.size() + "/"
 					+ target.graph.vertexCount);
 			System.out.println("Path Length:" + target.depth);
+			System.out.println("Max Depth: " + max_depth);
 		}
 
 		public Node Search(Node initial_state, Vertex goal_vertex,
@@ -127,6 +130,10 @@ public class Node {
 							+ "," + front_vertex.y + "), depth="
 							+ front_node.depth + ", dist2goal="
 							+ front_node.heur);
+				}
+
+				if (max_depth < front_node.depth) {
+					max_depth = front_node.depth;
 				}
 
 				if (front_node.vertex_id == goal_vertex.id) {
