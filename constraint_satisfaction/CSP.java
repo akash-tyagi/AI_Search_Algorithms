@@ -8,9 +8,9 @@ public abstract class CSP {
 
 	public abstract void setupProblem();
 
-	public abstract Job getUnassignedVariable();
+	public abstract Job getUnassignedJob();
 
-	public abstract List<Worker> getDomainValues();
+	public abstract List<Worker> getAvailableWorkers();
 
 	public abstract boolean isConsistent();
 
