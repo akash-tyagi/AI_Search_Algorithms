@@ -30,6 +30,10 @@ public class CSP {
 		return unassigned_variables.get(0);
 	}
 
+	public Variable getMRVBasedVariable() {
+		return getUnassignedVariable();
+	}
+
 	public List<Integer> getAvailableValues(Variable var) {
 		return null;
 	}
@@ -41,7 +45,7 @@ public class CSP {
 	public void printSolution() {
 		System.out.println("Expected Solution:$$$$$$$$$$$$$$$$$$$");
 		for (Variable variable : assingned_variables) {
-			System.out.println("JOB:" + getVariableName(variable) + " PERSON:"
+			System.out.println(getVariableName(variable) + " ----> "
 					+ getValueName(variable.assignedValue));
 		}
 	}

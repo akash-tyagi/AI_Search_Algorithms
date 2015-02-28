@@ -1,10 +1,7 @@
 package constraint_satisfaction;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class CspZebraPuzzle extends CSP {
 
@@ -45,36 +42,41 @@ public class CspZebraPuzzle extends CSP {
 			unassigned_variables.add(variable);
 			variables.add(variable);
 		}
-		unassigned_variables.get(0).setValues(VariableType.NATIONALITY,
+		int i = 0;
+
+		unassigned_variables.get(i++).setValues(VariableType.NATIONALITY,
 				ENGLISH, -1);
-		unassigned_variables.get(1).setValues(VariableType.NATIONALITY,
+		unassigned_variables.get(i++).setValues(VariableType.NATIONALITY,
 				SPANISH, -1);
-		unassigned_variables.get(2).setValues(VariableType.NATIONALITY,
+		unassigned_variables.get(i++).setValues(VariableType.NATIONALITY,
 				NORWEIGH, -1);
-		unassigned_variables.get(3).setValues(VariableType.NATIONALITY, UKRAIN,
-				-1);
-		unassigned_variables.get(4).setValues(VariableType.NATIONALITY,
+		unassigned_variables.get(i++).setValues(VariableType.NATIONALITY,
+				UKRAIN, -1);
+		unassigned_variables.get(i++).setValues(VariableType.NATIONALITY,
 				JAPANESE, -1);
-		unassigned_variables.get(5).setValues(VariableType.COLOR, GREEN, -1);
-		unassigned_variables.get(6).setValues(VariableType.COLOR, BLUE, -1);
-		unassigned_variables.get(7).setValues(VariableType.COLOR, YELLOW, -1);
-		unassigned_variables.get(8).setValues(VariableType.COLOR, IVORY, -1);
-		unassigned_variables.get(9).setValues(VariableType.COLOR, RED, -1);
-		unassigned_variables.get(10).setValues(VariableType.DRINK, JUICE, -1);
-		unassigned_variables.get(11).setValues(VariableType.DRINK, COFFEE, -1);
-		unassigned_variables.get(12).setValues(VariableType.DRINK, MILK, -1);
-		unassigned_variables.get(13).setValues(VariableType.DRINK, TEA, -1);
-		unassigned_variables.get(14).setValues(VariableType.DRINK, WATER, -1);
-		unassigned_variables.get(15).setValues(VariableType.FOOD, SNICKERS, -1);
-		unassigned_variables.get(16).setValues(VariableType.FOOD, SMARTIES, -1);
-		unassigned_variables.get(17).setValues(VariableType.FOOD, MILKYWAY, -1);
-		unassigned_variables.get(18).setValues(VariableType.FOOD, KITKAT, -1);
-		unassigned_variables.get(19).setValues(VariableType.FOOD, HERSHEY, -1);
-		unassigned_variables.get(20).setValues(VariableType.PET, DOG, -1);
-		unassigned_variables.get(21).setValues(VariableType.PET, HORSE, -1);
-		unassigned_variables.get(22).setValues(VariableType.PET, ZEBRA, -1);
-		unassigned_variables.get(23).setValues(VariableType.PET, SNAIL, -1);
-		unassigned_variables.get(24).setValues(VariableType.PET, FOX, -1);
+		unassigned_variables.get(i++).setValues(VariableType.COLOR, GREEN, -1);
+		unassigned_variables.get(i++).setValues(VariableType.COLOR, BLUE, -1);
+		unassigned_variables.get(i++).setValues(VariableType.COLOR, YELLOW, -1);
+		unassigned_variables.get(i++).setValues(VariableType.COLOR, IVORY, -1);
+		unassigned_variables.get(i++).setValues(VariableType.COLOR, RED, -1);
+		unassigned_variables.get(i++).setValues(VariableType.DRINK, JUICE, -1);
+		unassigned_variables.get(i++).setValues(VariableType.DRINK, COFFEE, -1);
+		unassigned_variables.get(i++).setValues(VariableType.DRINK, MILK, -1);
+		unassigned_variables.get(i++).setValues(VariableType.DRINK, TEA, -1);
+		unassigned_variables.get(i++).setValues(VariableType.DRINK, WATER, -1);
+		unassigned_variables.get(i++)
+				.setValues(VariableType.FOOD, SNICKERS, -1);
+		unassigned_variables.get(i++)
+				.setValues(VariableType.FOOD, SMARTIES, -1);
+		unassigned_variables.get(i++)
+				.setValues(VariableType.FOOD, MILKYWAY, -1);
+		unassigned_variables.get(i++).setValues(VariableType.FOOD, KITKAT, -1);
+		unassigned_variables.get(i++).setValues(VariableType.FOOD, HERSHEY, -1);
+		unassigned_variables.get(i++).setValues(VariableType.PET, DOG, -1);
+		unassigned_variables.get(i++).setValues(VariableType.PET, HORSE, -1);
+		unassigned_variables.get(i++).setValues(VariableType.PET, ZEBRA, -1);
+		unassigned_variables.get(i++).setValues(VariableType.PET, SNAIL, -1);
+		unassigned_variables.get(i++).setValues(VariableType.PET, FOX, -1);
 	}
 
 	@Override
@@ -98,6 +100,66 @@ public class CspZebraPuzzle extends CSP {
 			}
 		}
 		return available_values;
+	}
+
+	public Variable getMRVBasedVariable() {
+		if (unassigned_variables.size() == 0)
+			return null;
+
+		// Index of Variable type with minimum assigned variables remaining
+		int minIndex = 0;
+		int[] type = new int[5];
+		for (Variable variable : unassigned_variables) {
+			switch (variable.type) {
+			case NATIONALITY:
+				type[0]++;
+				break;
+			case COLOR:
+				type[1]++;
+				break;
+			case PET:
+				type[2]++;
+				break;
+			case DRINK:
+				type[3]++;
+				break;
+			case FOOD:
+				type[4]++;
+				break;
+			}
+		}
+
+		for (int i = 0; i < 5; i++) {
+			// Not to consider the types for which all variables are assigned
+			if (type[i] == 0)
+				type[i] = 6;
+			if (type[minIndex] > type[i])
+				minIndex = i;
+		}
+
+		VariableType varType = null;
+		switch (minIndex) {
+		case 0:
+			varType = VariableType.NATIONALITY;
+			break;
+		case 1:
+			varType = VariableType.COLOR;
+			break;
+		case 2:
+			varType = VariableType.PET;
+			break;
+		case 3:
+			varType = VariableType.DRINK;
+			break;
+		case 4:
+			varType = VariableType.FOOD;
+			break;
+		}
+		for (Variable variable : unassigned_variables) {
+			if (variable.type == varType)
+				return variable;
+		}
+		return null;
 	}
 
 	@Override
@@ -140,7 +202,83 @@ public class CspZebraPuzzle extends CSP {
 					&& getVariableValue(VariableType.COLOR, IVORY) != -1
 					&& var1.assignedValue != (getVariableValue(
 							VariableType.COLOR, IVORY) + 1)) {
-				System.out.println("Failed 3");
+				System.out.println("Failed 4");
+				return false;
+			}
+
+			if (var1.type == VariableType.FOOD
+					&& var1.name == HERSHEY
+					&& getVariableValue(VariableType.PET, FOX) != -1
+					&& (getVariableValue(VariableType.PET, FOX) + 1) != var1.assignedValue) {
+				System.out.println("Failed 5");
+				return false;
+			}
+
+			if (var1.type == VariableType.COLOR
+					&& var1.name == YELLOW
+					&& getVariableValue(VariableType.FOOD, KITKAT) != -1
+					&& getVariableValue(VariableType.FOOD, KITKAT) != var1.assignedValue) {
+				System.out.println("Failed 6");
+				return false;
+			}
+
+			if (var1.type == VariableType.COLOR && var1.name == BLUE
+					&& var1.assignedValue != 1) {
+				System.out.println("Failed 7");
+				return false;
+			}
+
+			if (var1.type == VariableType.FOOD
+					&& var1.name == SMARTIES
+					&& getVariableValue(VariableType.PET, SNAIL) != -1
+					&& getVariableValue(VariableType.PET, SNAIL) != var1.assignedValue) {
+				System.out.println("Failed 8");
+				return false;
+			}
+
+			if (var1.type == VariableType.FOOD
+					&& var1.name == SNICKERS
+					&& getVariableValue(VariableType.DRINK, JUICE) != -1
+					&& getVariableValue(VariableType.DRINK, JUICE) != var1.assignedValue) {
+				System.out.println("Failed 9");
+				return false;
+			}
+
+			if (var1.type == VariableType.NATIONALITY
+					&& var1.name == UKRAIN
+					&& getVariableValue(VariableType.DRINK, TEA) != -1
+					&& getVariableValue(VariableType.DRINK, TEA) != var1.assignedValue) {
+				System.out.println("Failed 10");
+				return false;
+			}
+
+			if (var1.type == VariableType.NATIONALITY
+					&& var1.name == JAPANESE
+					&& getVariableValue(VariableType.FOOD, MILKYWAY) != -1
+					&& getVariableValue(VariableType.FOOD, MILKYWAY) != var1.assignedValue) {
+				System.out.println("Failed 11");
+				return false;
+			}
+
+			if (var1.type == VariableType.FOOD
+					&& var1.name == KITKAT
+					&& getVariableValue(VariableType.PET, HORSE) != -1
+					&& (getVariableValue(VariableType.PET, HORSE) - 1) != var1.assignedValue) {
+				System.out.println("Failed 12");
+				return false;
+			}
+
+			if (var1.type == VariableType.DRINK
+					&& var1.name == COFFEE
+					&& getVariableValue(VariableType.COLOR, GREEN) != -1
+					&& getVariableValue(VariableType.COLOR, GREEN) != var1.assignedValue) {
+				System.out.println("Failed 13");
+				return false;
+			}
+
+			if (var1.type == VariableType.DRINK && var1.name == MILK
+					&& var1.assignedValue != 2) {
+				System.out.println("Failed 14");
 				return false;
 			}
 

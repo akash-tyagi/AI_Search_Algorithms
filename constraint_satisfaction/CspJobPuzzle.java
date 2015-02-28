@@ -60,6 +60,12 @@ public class CspJobPuzzle extends CSP {
 		return available_values;
 	}
 
+	public Variable getUnassignedVariable() {
+		if (unassigned_variables.size() == 0)
+			return null;
+		return unassigned_variables.get(0);
+	}
+
 	@Override
 	public boolean isConsistent() {
 		int[] job_per_person = new int[4];
