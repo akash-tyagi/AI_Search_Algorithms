@@ -2,21 +2,23 @@ package constraint_satisfaction;
 
 import java.util.List;
 
-import constraint_satisfaction.CspJobPuzzle.Value;
-
 public abstract class CSP {
 
 	public abstract void setupProblem();
 
 	public abstract Variable getUnassignedVariable();
 
-	public abstract List<Value> getAvailableValues();
+	public abstract List<Integer> getAvailableValues(Variable var);
 
 	public abstract boolean isConsistent();
 
 	public abstract void printSolution();
 
-	public abstract void assignValueToVariable(Variable variable, Value value);
+	public abstract void assignValueToVariable(Variable variable, int value);
 
 	public abstract void unassignValueToVariable(Variable variable);
-}
+
+	public abstract String getVariableName(Variable var);
+
+	public abstract String getValueName(int val);
+};

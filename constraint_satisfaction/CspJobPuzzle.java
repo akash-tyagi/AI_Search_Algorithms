@@ -1,223 +1,237 @@
 package constraint_satisfaction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CspJobPuzzle extends CSP {
 
-	static class Value {
-		public void setValues(String name, boolean male, boolean isEducated,
-				int totalJobsAssigned) {
-			this.name = name;
-			this.male = male;
-			this.isEducated = isEducated;
-			this.totalJobsAssigned = totalJobsAssigned;
-		}
+	public static final int CHEF = 0;
+	public static final int NURSE = 1;
+	public static final int GUARD = 2;
+	public static final int CLERK = 3;
+	public static final int POLICE_OFFICER = 4;
+	public static final int TEACHER = 5;
+	public static final int ACTOR = 6;
+	public static final int BOXER = 7;
 
-		public void incrementJobsAssigned() {
-			totalJobsAssigned++;
-			if (totalJobsAssigned > 2) {
-				System.out.println("################Total Jobs Assigned More");
-			}
-		}
+	public static final int ROBERTA = 0;
+	public static final int THELMA = 1;
+	public static final int STEVE = 2;
+	public static final int PETE = 3;
 
-		public void decrementJobsAssigned() {
-			totalJobsAssigned--;
-			if (totalJobsAssigned < 0) {
-				System.out.println("################Total Jobs less than 0");
-			}
-		}
-
-		public String name;
-		public boolean male;
-		public boolean isEducated;
-		public int totalJobsAssigned;
-
-	}
-
-	List<Variable> unassigned_jobs;
-	List<Variable> assigned_jobs;
-
-	List<Value> workers_notAvailable;
-	List<Value> workers_available;
+	Map<Integer, Integer> mapVariableToValue;
+	List<Variable> variables;
+	List<Variable> unassigned_variables;
+	List<Variable> assingned_variables;
 
 	public static final int TOTALJOBS = 8;
 	public static final int TOTALWORKER = 4;
 
 	public CspJobPuzzle() {
-		unassigned_jobs = new ArrayList<Variable>();
-		assigned_jobs = new ArrayList<Variable>();
-		workers_available = new ArrayList<Value>();
-		workers_notAvailable = new ArrayList<Value>();
+		mapVariableToValue = new HashMap<Integer, Integer>();
+		unassigned_variables = new ArrayList<Variable>();
+		assingned_variables = new ArrayList<Variable>();
+		variables = new ArrayList<Variable>();
 	}
 
 	@Override
 	public void setupProblem() {
 
-		for (int i = 0; i < TOTALWORKER; i++) {
-			Value singlePerson = new Value();
-			workers_available.add(singlePerson);
-		}
-		workers_available.get(0).setValues("Roberta", false, true, 0);
-		workers_available.get(1).setValues("Thelma", false, true, 0);
-		workers_available.get(2).setValues("Steve", true, true, 0);
-		workers_available.get(3).setValues("Pete", true, false, 0);
-
 		for (int i = 0; i < TOTALJOBS; i++) {
-			Variable job = new Variable();
-			unassigned_jobs.add(job);
+			Variable variable = new Variable();
+			unassigned_variables.add(variable);
+			variables.add(variable);
 		}
 
-		unassigned_jobs.get(0).name = "Chef";
-		unassigned_jobs.get(1).name = "Guard";
-		unassigned_jobs.get(2).name = "Nurse";
-		unassigned_jobs.get(3).name = "Clerk";
-		unassigned_jobs.get(4).name = "Police";
-		unassigned_jobs.get(5).name = "Teacher";
-		unassigned_jobs.get(6).name = "Actor";
-		unassigned_jobs.get(7).name = "Boxer";
-
+		unassigned_variables.get(0).setValues(VariableType.JOBS, BOXER, -1);
+		unassigned_variables.get(1).setValues(VariableType.JOBS, CHEF, -1);
+		unassigned_variables.get(2).setValues(VariableType.JOBS, CLERK, -1);
+		unassigned_variables.get(3).setValues(VariableType.JOBS, ACTOR, -1);
+		unassigned_variables.get(4).setValues(VariableType.JOBS,
+				POLICE_OFFICER, -1);
+		unassigned_variables.get(5).setValues(VariableType.JOBS, NURSE, -1);
+		unassigned_variables.get(6).setValues(VariableType.JOBS, GUARD, -1);
+		unassigned_variables.get(7).setValues(VariableType.JOBS, TEACHER, -1);
 	}
 
 	@Override
 	public Variable getUnassignedVariable() {
-		if (unassigned_jobs.size() == 0)
+		if (unassigned_variables.size() == 0)
 			return null;
-		return unassigned_jobs.get(0);
+		return unassigned_variables.get(0);
 	}
 
 	@Override
-	public List<Value> getAvailableValues() {
-		return workers_available;
+	public List<Integer> getAvailableValues(Variable var) {
+		List<Integer> available_values = new ArrayList<Integer>() {
+			{
+				add(0);
+				add(1);
+				add(2);
+				add(3);
+			}
+		};
+		// for (Variable variable : assingned_variables) {
+		// if (variable.type == var.type) {
+		// // System.out.println(getVariableName(variable) + ":"
+		// // + variable.assignedValue);
+		// int index = available_values.indexOf(variable.assignedValue);
+		// available_values.remove(index);
+		// }
+		// }
+		return available_values;
 	}
 
 	@Override
 	public boolean isConsistent() {
-		for (Variable job1 : assigned_jobs) {
+		int[] job_per_person = new int[4];
+		for (Variable var1 : assingned_variables) {
+			job_per_person[var1.assignedValue] = 1;
+			boolean isMale = (var1.assignedValue == STEVE || var1.assignedValue == PETE);
+			boolean isEducated = (var1.assignedValue != PETE);
 
-			if (job1.assignedValue.totalJobsAssigned > 2
-					|| job1.assignedValue.totalJobsAssigned <= 0) {
-				System.out.println("Jobs assigned count inconsistent");
-				return false;
+			for (Variable var2 : assingned_variables) {
+				if (var1 == var2)
+					continue;
+
+				if (var1.assignedValue == var2.assignedValue) {
+					System.out.println("Same value for "
+							+ getVariableName(var1) + ":"
+							+ getVariableName(var2));
+					job_per_person[var1.assignedValue]++;
+					if (job_per_person[var1.assignedValue] > 2) {
+						System.out.println("More than 2 person have job");
+						return false;
+					}
+				}
 			}
 
-			if (job1.name.equals("Nurse") && job1.assignedValue.male == false) {
+			if (var1.name == NURSE && isMale == false) {
 				System.out.println("Nurse can not be Female");
 				return false;
 			}
-			if (job1.name.equals("Actor") && job1.assignedValue.male == false) {
+
+			if (var1.name == ACTOR && isMale == false) {
 				System.out.println("Actor can not be Female");
 				return false;
 			}
 
-			if (job1.name.equals("Boxer")
-					&& job1.assignedValue.name.equals("Roberta")) {
+			if (var1.name == BOXER && var1.assignedValue == ROBERTA) {
 				System.out.println("Roberta can not be boxer");
 				return false;
 			}
-			if ((job1.name.equals("Nurse") || job1.name.equals("Teacher") || job1.name
-					.equals("Police"))
-					&& job1.assignedValue.isEducated == false) {
+
+			if ((var1.name == NURSE || var1.name == TEACHER || var1.name == POLICE_OFFICER)
+					&& isEducated == false) {
 				System.out
 						.println("Nurse Teacher and Police can not be uneducated");
 				return false;
 			}
 
-			if (job1.name.equals("Chef")
-					&& !job1.assignedValue.name.equals("Thelma")) {
+			if (var1.name == CHEF && var1.assignedValue != THELMA) {
+				System.out.println("THELMA has to be chef");
 				return false;
 			}
 
-			if (job1.name.equals("Clerk")
-					&& job1.assignedValue.name.equals("Thelma")) {
+			if (var1.name == CLERK
+					&& (var1.assignedValue == THELMA || var1.assignedValue == ROBERTA)) {
+				System.out.println("THELMA/ROBERTA can not be clerk");
 				return false;
 			}
-
-			if (job1.name.equals("Police")
-					&& (job1.assignedValue.name.equals("Roberta") || job1.assignedValue.name
-							.equals("Thelma"))) {
+			if (var1.name == POLICE_OFFICER && isMale == false) {
+				System.out.println("THELMA can not be clerk");
 				return false;
 			}
-
-			// for (Job job2 : assigned_jobs) {
-			// if (job1 == job2)
-			// continue;
-			//
-			// // job should not be assigned to two people
-			// if (job1.assignedWorker == job2.assignedWorker)
-			// return false;
-			//
-			// }
 		}
-
 		return true;
 	}
 
 	@Override
 	public void printSolution() {
 		System.out.println("Expected Solution:$$$$$$$$$$$$$$$$$$$");
-		for (Variable job : assigned_jobs) {
-			System.out.println("Job:" + job.name + "  Worker:"
-					+ job.assignedValue.name);
+		for (Variable variable : assingned_variables) {
+			System.out.println("JOB:" + getVariableName(variable) + " PERSON:"
+					+ getValueName(variable.assignedValue));
 		}
 	}
 
 	@Override
-	public void assignValueToVariable(Variable job, Value worker) {
-		job.assignValue(worker);
-		unassigned_jobs.remove(job);
-		assigned_jobs.add(job);
-
-		worker.incrementJobsAssigned();
-		if (worker.totalJobsAssigned == 2) {
-			workers_available.remove(worker);
-			workers_notAvailable.add(worker);
-		}
+	public void assignValueToVariable(Variable var, int value) {
+		var.assignedValue = value;
+		unassigned_variables.remove(var);
+		assingned_variables.add(var);
+		System.out.println("Assigned " + getVariableName(var) + " PERSON:"
+				+ getValueName(value));
 		areDuplicates();
-		System.out.println("Assigned Job:" + job.name + " Worker:"
-				+ worker.name);
 	}
 
 	@Override
-	public void unassignValueToVariable(Variable job) {
-		Value worker = job.unAssignValue();
-		unassigned_jobs.add(job);
-		assigned_jobs.remove(job);
-
-		if (worker.totalJobsAssigned == 2) {
-			workers_notAvailable.remove(worker);
-			workers_available.add(worker);
-		}
-		worker.decrementJobsAssigned();
-
+	public void unassignValueToVariable(Variable var) {
+		System.out.println("Unassigning " + getVariableName(var) + " PERSON:"
+				+ getValueName(var.assignedValue));
+		var.assignedValue = -1;
+		unassigned_variables.add(var);
+		assingned_variables.remove(var);
 		areDuplicates();
-		System.out.println("Unassigning Job:" + job.name + " worker:"
-				+ worker.name);
 	}
 
 	public void areDuplicates() {
-		Set<Variable> setUnassignedJobs = new HashSet<Variable>(unassigned_jobs);
-		if (setUnassignedJobs.size() < unassigned_jobs.size()) {
-			System.out.println("#########Duplicates Unassigned job");
+		Set<Variable> setUnassignedVariables = new HashSet<Variable>(
+				unassigned_variables);
+		if (setUnassignedVariables.size() < unassigned_variables.size()) {
+			System.out.println("#########Duplicates Unassigned variables");
 		}
 
-		Set<Variable> setassignedJobs = new HashSet<Variable>(assigned_jobs);
-		if (setassignedJobs.size() < assigned_jobs.size()) {
-			System.out.println("#########Duplicates Assigned Job");
+		Set<Variable> setAssignedVariables = new HashSet<Variable>(
+				assingned_variables);
+		if (setAssignedVariables.size() < assingned_variables.size()) {
+			System.out.println("#########Duplicates Assigned variables");
 		}
 
-		Set<Value> setAvailableWorkers = new HashSet<Value>(workers_available);
-		if (setAvailableWorkers.size() < workers_available.size()) {
-			System.out.println("#########Duplicates Workers available");
-		}
+	}
 
-		Set<Value> setUnavailableWorkers = new HashSet<Value>(
-				workers_notAvailable);
-		if (setUnavailableWorkers.size() < workers_notAvailable.size()) {
-			System.out.println("#########Duplicates workers not available");
+	@Override
+	public String getVariableName(Variable var) {
+		if (var.type == VariableType.JOBS) {
+			switch (var.name) {
+			case ACTOR:
+				return "ACTOR";
+			case CHEF:
+				return "CHEF";
+			case GUARD:
+				return "GUARD";
+			case POLICE_OFFICER:
+				return "POLICE_OFFICER";
+			case NURSE:
+				return "NURSE";
+			case TEACHER:
+				return "TEACHER";
+			case BOXER:
+				return "BOXER";
+			case CLERK:
+				return "CLERK";
+			}
 		}
+		System.out.println("No Name Found:" + var.name);
+		return "";
+	}
 
+	@Override
+	public String getValueName(int val) {
+		switch (val) {
+		case ROBERTA:
+			return "ROBERTA";
+		case THELMA:
+			return "THELMA";
+		case STEVE:
+			return "STEVE";
+		case PETE:
+			return "PETE";
+		}
+		return "";
 	}
 }

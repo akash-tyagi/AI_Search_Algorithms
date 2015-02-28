@@ -1,25 +1,20 @@
 package constraint_satisfaction;
 
-import constraint_satisfaction.CspJobPuzzle.Value;
-
 public class Variable {
-	public String name;
-	public Value assignedValue;
+
+	public VariableType type;
+	public int name;
+	public int assignedValue;
 
 	public Variable() {
-		this.name = null;
-		assignedValue = null;
+		type = null;
+		name = -1;
+		assignedValue = -1;
 	}
 
-	public void assignValue(Value value) {
-		assignedValue = value;
-
+	public void setValues(VariableType type, int name, int assignedValue) {
+		this.type = type;
+		this.name = name;
+		this.assignedValue = assignedValue;
 	}
-
-	public Value unAssignValue() {
-		Value prevValue = assignedValue;
-		assignedValue = null;
-		return prevValue;
-	}
-
 }
