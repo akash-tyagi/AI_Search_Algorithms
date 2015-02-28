@@ -4,15 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class CspZebraPuzzle extends CSP {
-
-	Map<Integer, Integer> mapVariableToValue;
-	List<Variable> variables;
-	List<Variable> unassigned_variables;
-	List<Variable> assingned_variables;
 
 	public static final int ENGLISH = 0;
 	public static final int SPANISH = 1;
@@ -43,13 +37,6 @@ public class CspZebraPuzzle extends CSP {
 	public static final int YELLOW = 2;
 	public static final int IVORY = 3;
 	public static final int RED = 4;
-
-	public CspZebraPuzzle() {
-		mapVariableToValue = new HashMap<Integer, Integer>();
-		unassigned_variables = new ArrayList<Variable>();
-		assingned_variables = new ArrayList<Variable>();
-		variables = new ArrayList<Variable>();
-	}
 
 	@Override
 	public void setupProblem() {
@@ -88,13 +75,6 @@ public class CspZebraPuzzle extends CSP {
 		unassigned_variables.get(22).setValues(VariableType.PET, ZEBRA, -1);
 		unassigned_variables.get(23).setValues(VariableType.PET, SNAIL, -1);
 		unassigned_variables.get(24).setValues(VariableType.PET, FOX, -1);
-	}
-
-	@Override
-	public Variable getUnassignedVariable() {
-		if (unassigned_variables.size() == 0)
-			return null;
-		return unassigned_variables.get(0);
 	}
 
 	@Override
@@ -168,54 +148,12 @@ public class CspZebraPuzzle extends CSP {
 		return true;
 	}
 
-	@Override
-	public void printSolution() {
-		for (Variable variable : assingned_variables) {
-			System.out.println("Name:" + getVariableName(variable) + " House:"
-					+ variable.assignedValue);
-		}
-	}
-
-	@Override
-	public void assignValueToVariable(Variable var, int value) {
-		var.assignedValue = value;
-		unassigned_variables.remove(var);
-		assingned_variables.add(var);
-		System.out.println("Assigned " + getVariableName(var) + " House:"
-				+ value);
-		areDuplicates();
-	}
-
-	@Override
-	public void unassignValueToVariable(Variable var) {
-		System.out.println("Unassigning " + getVariableName(var) + " House:"
-				+ var.assignedValue);
-		var.assignedValue = -1;
-		unassigned_variables.add(var);
-		assingned_variables.remove(var);
-		areDuplicates();
-	}
-
 	public int getVariableValue(VariableType type, int name) {
 		for (Variable variable : variables) {
 			if (variable.type == type && variable.name == name)
 				return variable.assignedValue;
 		}
 		return -1;
-	}
-
-	public void areDuplicates() {
-		Set<Variable> setUnassignedVariables = new HashSet<Variable>(
-				unassigned_variables);
-		if (setUnassignedVariables.size() < unassigned_variables.size()) {
-			System.out.println("#########Duplicates Unassigned variables");
-		}
-
-		Set<Variable> setAssignedVariables = new HashSet<Variable>(
-				assingned_variables);
-		if (setAssignedVariables.size() < assingned_variables.size()) {
-			System.out.println("#########Duplicates Assigned variables");
-		}
 	}
 
 	@Override

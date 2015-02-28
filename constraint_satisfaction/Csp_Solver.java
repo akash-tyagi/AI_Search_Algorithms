@@ -43,11 +43,11 @@ public class Csp_Solver {
 	public static void main(String args[]) {
 		Csp_Solver solver = new Csp_Solver();
 
-		CspJobPuzzle problem = new CspJobPuzzle();
-		problem.setupProblem();
+//		CspJobPuzzle problem = new CspJobPuzzle();
+//		problem.setupProblem();
 
-		// CspZebraPuzzle problem = new CspZebraPuzzle();
-		// problem.setupProblem();
+		CspZebraPuzzle problem = new CspZebraPuzzle();
+		problem.setupProblem();
 
 		if (solver.backTrack(problem)) {
 			problem.printSolution();

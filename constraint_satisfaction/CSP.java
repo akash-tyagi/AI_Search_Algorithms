@@ -1,24 +1,89 @@
 package constraint_satisfaction;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public abstract class CSP {
+public class CSP {
 
-	public abstract void setupProblem();
+	Map<Integer, Integer> mapVariableToValue;
+	List<Variable> variables;
+	List<Variable> unassigned_variables;
+	List<Variable> assingned_variables;
 
-	public abstract Variable getUnassignedVariable();
+	public CSP() {
+		mapVariableToValue = new HashMap<Integer, Integer>();
+		unassigned_variables = new ArrayList<Variable>();
+		assingned_variables = new ArrayList<Variable>();
+		variables = new ArrayList<Variable>();
+	}
 
-	public abstract List<Integer> getAvailableValues(Variable var);
+	public void setupProblem() {
+	}
 
-	public abstract boolean isConsistent();
+	public Variable getUnassignedVariable() {
+		if (unassigned_variables.size() == 0)
+			return null;
+		return unassigned_variables.get(0);
+	}
 
-	public abstract void printSolution();
+	public List<Integer> getAvailableValues(Variable var) {
+		return null;
+	}
 
-	public abstract void assignValueToVariable(Variable variable, int value);
+	public boolean isConsistent() {
+		return false;
+	}
 
-	public abstract void unassignValueToVariable(Variable variable);
+	public void printSolution() {
+		System.out.println("Expected Solution:$$$$$$$$$$$$$$$$$$$");
+		for (Variable variable : assingned_variables) {
+			System.out.println("JOB:" + getVariableName(variable) + " PERSON:"
+					+ getValueName(variable.assignedValue));
+		}
+	}
 
-	public abstract String getVariableName(Variable var);
+	public void assignValueToVariable(Variable var, int value) {
+		var.assignedValue = value;
+		unassigned_variables.remove(var);
+		assingned_variables.add(var);
+		System.out.println("Assigned " + getVariableName(var) + " PERSON:"
+				+ getValueName(value));
+		areDuplicates();
+	}
 
-	public abstract String getValueName(int val);
+	public void unassignValueToVariable(Variable var) {
+		System.out.println("Unassigning " + getVariableName(var) + " PERSON:"
+				+ getValueName(var.assignedValue));
+		var.assignedValue = -1;
+		unassigned_variables.add(var);
+		assingned_variables.remove(var);
+		areDuplicates();
+	}
+
+	public void areDuplicates() {
+		Set<Variable> setUnassignedVariables = new HashSet<Variable>(
+				unassigned_variables);
+		if (setUnassignedVariables.size() < unassigned_variables.size()) {
+			System.out.println("#########Duplicates Unassigned variables");
+		}
+
+		Set<Variable> setAssignedVariables = new HashSet<Variable>(
+				assingned_variables);
+		if (setAssignedVariables.size() < assingned_variables.size()) {
+			System.out.println("#########Duplicates Assigned variables");
+		}
+
+	}
+
+	public String getVariableName(Variable var) {
+		return "";
+	}
+
+	public String getValueName(int val) {
+		return "";
+	}
 };

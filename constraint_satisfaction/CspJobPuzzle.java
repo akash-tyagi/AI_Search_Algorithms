@@ -2,10 +2,7 @@ package constraint_satisfaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class CspJobPuzzle extends CSP {
 
@@ -23,25 +20,9 @@ public class CspJobPuzzle extends CSP {
 	public static final int STEVE = 2;
 	public static final int PETE = 3;
 
-	Map<Integer, Integer> mapVariableToValue;
-	List<Variable> variables;
-	List<Variable> unassigned_variables;
-	List<Variable> assingned_variables;
-
-	public static final int TOTALJOBS = 8;
-	public static final int TOTALWORKER = 4;
-
-	public CspJobPuzzle() {
-		mapVariableToValue = new HashMap<Integer, Integer>();
-		unassigned_variables = new ArrayList<Variable>();
-		assingned_variables = new ArrayList<Variable>();
-		variables = new ArrayList<Variable>();
-	}
-
-	@Override
 	public void setupProblem() {
 
-		for (int i = 0; i < TOTALJOBS; i++) {
+		for (int i = 0; i < 8; i++) {
 			Variable variable = new Variable();
 			unassigned_variables.add(variable);
 			variables.add(variable);
@@ -56,13 +37,6 @@ public class CspJobPuzzle extends CSP {
 		unassigned_variables.get(5).setValues(VariableType.JOBS, NURSE, -1);
 		unassigned_variables.get(6).setValues(VariableType.JOBS, GUARD, -1);
 		unassigned_variables.get(7).setValues(VariableType.JOBS, TEACHER, -1);
-	}
-
-	@Override
-	public Variable getUnassignedVariable() {
-		if (unassigned_variables.size() == 0)
-			return null;
-		return unassigned_variables.get(0);
 	}
 
 	@Override
@@ -150,51 +124,6 @@ public class CspJobPuzzle extends CSP {
 		return true;
 	}
 
-	@Override
-	public void printSolution() {
-		System.out.println("Expected Solution:$$$$$$$$$$$$$$$$$$$");
-		for (Variable variable : assingned_variables) {
-			System.out.println("JOB:" + getVariableName(variable) + " PERSON:"
-					+ getValueName(variable.assignedValue));
-		}
-	}
-
-	@Override
-	public void assignValueToVariable(Variable var, int value) {
-		var.assignedValue = value;
-		unassigned_variables.remove(var);
-		assingned_variables.add(var);
-		System.out.println("Assigned " + getVariableName(var) + " PERSON:"
-				+ getValueName(value));
-		areDuplicates();
-	}
-
-	@Override
-	public void unassignValueToVariable(Variable var) {
-		System.out.println("Unassigning " + getVariableName(var) + " PERSON:"
-				+ getValueName(var.assignedValue));
-		var.assignedValue = -1;
-		unassigned_variables.add(var);
-		assingned_variables.remove(var);
-		areDuplicates();
-	}
-
-	public void areDuplicates() {
-		Set<Variable> setUnassignedVariables = new HashSet<Variable>(
-				unassigned_variables);
-		if (setUnassignedVariables.size() < unassigned_variables.size()) {
-			System.out.println("#########Duplicates Unassigned variables");
-		}
-
-		Set<Variable> setAssignedVariables = new HashSet<Variable>(
-				assingned_variables);
-		if (setAssignedVariables.size() < assingned_variables.size()) {
-			System.out.println("#########Duplicates Assigned variables");
-		}
-
-	}
-
-	@Override
 	public String getVariableName(Variable var) {
 		if (var.type == VariableType.JOBS) {
 			switch (var.name) {
@@ -220,7 +149,6 @@ public class CspJobPuzzle extends CSP {
 		return "";
 	}
 
-	@Override
 	public String getValueName(int val) {
 		switch (val) {
 		case ROBERTA:
