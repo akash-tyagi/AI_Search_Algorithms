@@ -1,16 +1,13 @@
 package constraint_satisfaction;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class CspJobPuzzle extends CSP {
 
-	static class Worker {
+	static class Value {
 		public void setValues(String name, boolean male, boolean isEducated,
 				int totalJobsAssigned) {
 			this.name = name;
@@ -40,27 +37,27 @@ public class CspJobPuzzle extends CSP {
 
 	}
 
-	List<Job> unassigned_jobs;
-	List<Job> assigned_jobs;
+	List<Variable> unassigned_jobs;
+	List<Variable> assigned_jobs;
 
-	List<Worker> workers_notAvailable;
-	List<Worker> workers_available;
+	List<Value> workers_notAvailable;
+	List<Value> workers_available;
 
 	public static final int TOTALJOBS = 8;
 	public static final int TOTALWORKER = 4;
 
 	public CspJobPuzzle() {
-		unassigned_jobs = new ArrayList<Job>();
-		assigned_jobs = new ArrayList<Job>();
-		workers_available = new ArrayList<Worker>();
-		workers_notAvailable = new ArrayList<Worker>();
+		unassigned_jobs = new ArrayList<Variable>();
+		assigned_jobs = new ArrayList<Variable>();
+		workers_available = new ArrayList<Value>();
+		workers_notAvailable = new ArrayList<Value>();
 	}
 
 	@Override
 	public void setupProblem() {
 
 		for (int i = 0; i < TOTALWORKER; i++) {
-			Worker singlePerson = new Worker();
+			Value singlePerson = new Value();
 			workers_available.add(singlePerson);
 		}
 		workers_available.get(0).setValues("Roberta", false, true, 0);
@@ -69,7 +66,7 @@ public class CspJobPuzzle extends CSP {
 		workers_available.get(3).setValues("Pete", true, false, 0);
 
 		for (int i = 0; i < TOTALJOBS; i++) {
-			Job job = new Job();
+			Variable job = new Variable();
 			unassigned_jobs.add(job);
 		}
 
@@ -85,61 +82,61 @@ public class CspJobPuzzle extends CSP {
 	}
 
 	@Override
-	public Job getUnassignedJob() {
+	public Variable getUnassignedVariable() {
 		if (unassigned_jobs.size() == 0)
 			return null;
 		return unassigned_jobs.get(0);
 	}
 
 	@Override
-	public List<Worker> getAvailableWorkers() {
+	public List<Value> getAvailableValues() {
 		return workers_available;
 	}
 
 	@Override
 	public boolean isConsistent() {
-		for (Job job1 : assigned_jobs) {
+		for (Variable job1 : assigned_jobs) {
 
-			if (job1.assignedWorker.totalJobsAssigned > 2
-					|| job1.assignedWorker.totalJobsAssigned <= 0) {
+			if (job1.assignedValue.totalJobsAssigned > 2
+					|| job1.assignedValue.totalJobsAssigned <= 0) {
 				System.out.println("Jobs assigned count inconsistent");
 				return false;
 			}
 
-			if (job1.name.equals("Nurse") && job1.assignedWorker.male == false) {
+			if (job1.name.equals("Nurse") && job1.assignedValue.male == false) {
 				System.out.println("Nurse can not be Female");
 				return false;
 			}
-			if (job1.name.equals("Actor") && job1.assignedWorker.male == false) {
+			if (job1.name.equals("Actor") && job1.assignedValue.male == false) {
 				System.out.println("Actor can not be Female");
 				return false;
 			}
 
 			if (job1.name.equals("Boxer")
-					&& job1.assignedWorker.name.equals("Roberta")) {
+					&& job1.assignedValue.name.equals("Roberta")) {
 				System.out.println("Roberta can not be boxer");
 				return false;
 			}
 			if ((job1.name.equals("Nurse") || job1.name.equals("Teacher") || job1.name
 					.equals("Police"))
-					&& job1.assignedWorker.isEducated == false) {
+					&& job1.assignedValue.isEducated == false) {
 				System.out
 						.println("Nurse Teacher and Police can not be uneducated");
 				return false;
 			}
 
 			if (job1.name.equals("Chef")
-					&& !job1.assignedWorker.name.equals("Thelma")) {
+					&& !job1.assignedValue.name.equals("Thelma")) {
 				return false;
 			}
 
 			if (job1.name.equals("Clerk")
-					&& job1.assignedWorker.name.equals("Thelma")) {
+					&& job1.assignedValue.name.equals("Thelma")) {
 				return false;
 			}
 
 			if (job1.name.equals("Police")
-					&& (job1.assignedWorker.name.equals("Roberta") || job1.assignedWorker.name
+					&& (job1.assignedValue.name.equals("Roberta") || job1.assignedValue.name
 							.equals("Thelma"))) {
 				return false;
 			}
@@ -161,15 +158,15 @@ public class CspJobPuzzle extends CSP {
 	@Override
 	public void printSolution() {
 		System.out.println("Expected Solution:$$$$$$$$$$$$$$$$$$$");
-		for (Job job : assigned_jobs) {
+		for (Variable job : assigned_jobs) {
 			System.out.println("Job:" + job.name + "  Worker:"
-					+ job.assignedWorker.name);
+					+ job.assignedValue.name);
 		}
 	}
 
 	@Override
-	public void assignJobToWorker(Job job, Worker worker) {
-		job.assignWorker(worker);
+	public void assignValueToVariable(Variable job, Value worker) {
+		job.assignValue(worker);
 		unassigned_jobs.remove(job);
 		assigned_jobs.add(job);
 
@@ -184,8 +181,8 @@ public class CspJobPuzzle extends CSP {
 	}
 
 	@Override
-	public void unassignJobForWorker(Job job) {
-		Worker worker = job.unAssignWorker();
+	public void unassignValueToVariable(Variable job) {
+		Value worker = job.unAssignValue();
 		unassigned_jobs.add(job);
 		assigned_jobs.remove(job);
 
@@ -201,22 +198,22 @@ public class CspJobPuzzle extends CSP {
 	}
 
 	public void areDuplicates() {
-		Set<Job> setUnassignedJobs = new HashSet<Job>(unassigned_jobs);
+		Set<Variable> setUnassignedJobs = new HashSet<Variable>(unassigned_jobs);
 		if (setUnassignedJobs.size() < unassigned_jobs.size()) {
 			System.out.println("#########Duplicates Unassigned job");
 		}
 
-		Set<Job> setassignedJobs = new HashSet<Job>(assigned_jobs);
+		Set<Variable> setassignedJobs = new HashSet<Variable>(assigned_jobs);
 		if (setassignedJobs.size() < assigned_jobs.size()) {
 			System.out.println("#########Duplicates Assigned Job");
 		}
 
-		Set<Worker> setAvailableWorkers = new HashSet<Worker>(workers_available);
+		Set<Value> setAvailableWorkers = new HashSet<Value>(workers_available);
 		if (setAvailableWorkers.size() < workers_available.size()) {
 			System.out.println("#########Duplicates Workers available");
 		}
 
-		Set<Worker> setUnavailableWorkers = new HashSet<Worker>(
+		Set<Value> setUnavailableWorkers = new HashSet<Value>(
 				workers_notAvailable);
 		if (setUnavailableWorkers.size() < workers_notAvailable.size()) {
 			System.out.println("#########Duplicates workers not available");
