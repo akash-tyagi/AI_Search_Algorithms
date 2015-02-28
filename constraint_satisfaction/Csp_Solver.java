@@ -10,7 +10,7 @@ public class Csp_Solver {
 	public boolean backTrack(CSP problem) {
 		System.out.println("\n" + iter++);
 
-		constraint_satisfaction.Variable var = problem.getUnassignedVariable();
+		Variable var = problem.getUnassignedVariable();
 		if (var == null) {
 			return true;
 		}
@@ -19,20 +19,21 @@ public class Csp_Solver {
 
 		List<Integer> availableValues = new ArrayList<Integer>(
 				problem.getAvailableValues(var));
+
 		if (availableValues.size() <= 0)
 			System.out.println("No one available");
 		for (Integer worker : availableValues) {
 			System.out.println("Available:" + worker);
 		}
 
-		for (Integer worker : availableValues) {
-			System.out.println("Considering Value:" + worker);
+		for (int value : availableValues) {
+			System.out.println("Considering Value:"
+					+ problem.getValueName(value));
 
-			problem.assignValueToVariable(var, worker);
+			problem.assignValueToVariable(var, value);
 			if (problem.isConsistent() && backTrack(problem)) {
 				return true;
 			}
-			// problem.printSolution();
 			System.out.println("Not Consistent\n");
 			problem.unassignValueToVariable(var);
 		}

@@ -99,9 +99,9 @@ public class CspJobPuzzle extends CSP {
 					continue;
 
 				if (var1.assignedValue == var2.assignedValue) {
-					System.out.println("Same value for "
-							+ getVariableName(var1) + ":"
-							+ getVariableName(var2));
+					// System.out.println("Same value for "
+					// + getVariableName(var1) + ":"
+					// + getVariableName(var2));
 					job_per_person[var1.assignedValue]++;
 					if (job_per_person[var1.assignedValue] > 2) {
 						System.out.println("More than 2 person have job");
