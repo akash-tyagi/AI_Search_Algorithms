@@ -13,12 +13,14 @@ public class CSP {
 	List<Variable> variables;
 	List<Variable> unassigned_variables;
 	List<Variable> assingned_variables;
+	int totalVariables, totalValues;
 
 	public CSP() {
 		mapVariableToValue = new HashMap<Integer, Integer>();
 		unassigned_variables = new ArrayList<Variable>();
 		assingned_variables = new ArrayList<Variable>();
 		variables = new ArrayList<Variable>();
+		totalVariables = totalValues = 0;
 	}
 
 	public void setupProblem() {
@@ -31,7 +33,33 @@ public class CSP {
 	}
 
 	public Variable getMRVBasedVariable() {
-		return getUnassignedVariable();
+		if (unassigned_variables.size() == 0)
+			return null;
+
+		Map<Variable, Integer> map = new HashMap<Variable, Integer>();
+		Variable minConstVar = null;
+
+		List<Variable> list = new ArrayList<Variable>(unassigned_variables);
+		for (Variable var : list) {
+			map.put(var, 0);
+			List<Integer> availableValues = new ArrayList<Integer>(
+					getAvailableValues(var));
+			for (Integer value : availableValues) {
+				assignValueToVariable(var, value);
+				if (isConsistent())
+					map.put(var, map.get(var) + 1);
+				unassignValueToVariable(var);
+			}
+		}
+
+		int minConsist = totalValues;
+		for (Variable var : map.keySet()) {
+			if (map.get(var) < minConsist) {
+				minConsist = map.get(var);
+				minConstVar = var;
+			}
+		}
+		return minConstVar;
 	}
 
 	public List<Integer> getAvailableValues(Variable var) {
@@ -54,14 +82,10 @@ public class CSP {
 		var.assignedValue = value;
 		unassigned_variables.remove(var);
 		assingned_variables.add(var);
-		System.out.println("Assigned " + getVariableName(var) + " PERSON:"
-				+ getValueName(value));
 		areDuplicates();
 	}
 
 	public void unassignValueToVariable(Variable var) {
-		System.out.println("Unassigning " + getVariableName(var) + " PERSON:"
-				+ getValueName(var.assignedValue));
 		var.assignedValue = -1;
 		unassigned_variables.add(var);
 		assingned_variables.remove(var);

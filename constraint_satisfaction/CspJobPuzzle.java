@@ -1,7 +1,6 @@
 package constraint_satisfaction;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class CspJobPuzzle extends CSP {
@@ -20,50 +19,45 @@ public class CspJobPuzzle extends CSP {
 	public static final int STEVE = 2;
 	public static final int PETE = 3;
 
+	public CspJobPuzzle() {
+		totalValues = 4;
+		totalVariables = 8;
+	}
+
 	public void setupProblem() {
 
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < totalVariables; i++) {
 			Variable variable = new Variable();
 			unassigned_variables.add(variable);
 			variables.add(variable);
 		}
-
-		unassigned_variables.get(0).setValues(VariableType.JOBS, BOXER, -1);
-		unassigned_variables.get(1).setValues(VariableType.JOBS, CHEF, -1);
-		unassigned_variables.get(2).setValues(VariableType.JOBS, CLERK, -1);
-		unassigned_variables.get(3).setValues(VariableType.JOBS, ACTOR, -1);
-		unassigned_variables.get(4).setValues(VariableType.JOBS,
+		int i = 0;
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, TEACHER, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, GUARD, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS,
 				POLICE_OFFICER, -1);
-		unassigned_variables.get(5).setValues(VariableType.JOBS, NURSE, -1);
-		unassigned_variables.get(6).setValues(VariableType.JOBS, GUARD, -1);
-		unassigned_variables.get(7).setValues(VariableType.JOBS, TEACHER, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, BOXER, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, CLERK, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, ACTOR, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, NURSE, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, CHEF, -1);
 	}
 
 	@Override
 	public List<Integer> getAvailableValues(Variable var) {
-		List<Integer> available_values = new ArrayList<Integer>() {
-			{
-				add(0);
-				add(1);
-				add(2);
-				add(3);
-			}
-		};
-		// for (Variable variable : assingned_variables) {
-		// if (variable.type == var.type) {
-		// // System.out.println(getVariableName(variable) + ":"
-		// // + variable.assignedValue);
-		// int index = available_values.indexOf(variable.assignedValue);
-		// available_values.remove(index);
-		// }
-		// }
+		List<Integer> available_values = new ArrayList<Integer>();
+		for (int i = 0; i < totalValues; i++) {
+			available_values.add(i);
+		}
 		return available_values;
 	}
 
 	public Variable getUnassignedVariable() {
 		if (unassigned_variables.size() == 0)
 			return null;
-		return unassigned_variables.get(0);
+
+		return unassigned_variables
+				.get((int) (Math.random() * unassigned_variables.size()));
 	}
 
 	@Override
@@ -79,51 +73,49 @@ public class CspJobPuzzle extends CSP {
 					continue;
 
 				if (var1.assignedValue == var2.assignedValue) {
-					// System.out.println("Same value for "
-					// + getVariableName(var1) + ":"
-					// + getVariableName(var2));
 					job_per_person[var1.assignedValue]++;
 					if (job_per_person[var1.assignedValue] > 2) {
-						System.out.println("More than 2 person have job");
+						System.out
+								.println("Failed: More than 2 person have job");
 						return false;
 					}
 				}
 			}
 
 			if (var1.name == NURSE && isMale == false) {
-				System.out.println("Nurse can not be Female");
+				System.out.println("Failed: Nurse can not be Female");
 				return false;
 			}
 
 			if (var1.name == ACTOR && isMale == false) {
-				System.out.println("Actor can not be Female");
+				System.out.println("Failed: Actor can not be Female");
 				return false;
 			}
 
 			if (var1.name == BOXER && var1.assignedValue == ROBERTA) {
-				System.out.println("Roberta can not be boxer");
+				System.out.println("Failed: Roberta can not be boxer");
 				return false;
 			}
 
 			if ((var1.name == NURSE || var1.name == TEACHER || var1.name == POLICE_OFFICER)
 					&& isEducated == false) {
 				System.out
-						.println("Nurse Teacher and Police can not be uneducated");
+						.println("Failed: Nurse Teacher and Police can not be uneducated");
 				return false;
 			}
 
 			if (var1.name == CHEF && var1.assignedValue != THELMA) {
-				System.out.println("THELMA has to be chef");
+				System.out.println("Failed: THELMA has to be chef");
 				return false;
 			}
 
 			if (var1.name == CLERK
 					&& (var1.assignedValue == THELMA || var1.assignedValue == ROBERTA)) {
-				System.out.println("THELMA/ROBERTA can not be clerk");
+				System.out.println("Failed: THELMA/ROBERTA can not be clerk");
 				return false;
 			}
 			if (var1.name == POLICE_OFFICER && isMale == false) {
-				System.out.println("THELMA can not be clerk");
+				System.out.println("Failed: THELMA can not be clerk");
 				return false;
 			}
 		}

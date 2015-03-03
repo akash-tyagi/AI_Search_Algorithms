@@ -35,15 +35,20 @@ public class CspZebraPuzzle extends CSP {
 	public static final int IVORY = 3;
 	public static final int RED = 4;
 
+	public CspZebraPuzzle() {
+		super();
+		totalVariables = 25;
+		totalValues = 5;
+	}
+
 	@Override
 	public void setupProblem() {
-		for (int i = 0; i < 25; i++) {
+		for (int i = 0; i < totalVariables; i++) {
 			Variable variable = new Variable();
 			unassigned_variables.add(variable);
 			variables.add(variable);
 		}
 		int i = 0;
-
 		unassigned_variables.get(i++).setValues(VariableType.NATIONALITY,
 				ENGLISH, -1);
 		unassigned_variables.get(i++).setValues(VariableType.NATIONALITY,
@@ -81,85 +86,18 @@ public class CspZebraPuzzle extends CSP {
 
 	@Override
 	public List<Integer> getAvailableValues(Variable var) {
-		List<Integer> available_values = new ArrayList<Integer>() {
-			{
-				add(0);
-				add(1);
-				add(2);
-				add(3);
-				add(4);
-			}
-		};
+		List<Integer> available_values = new ArrayList<Integer>();
+		for (int i = 0; i < totalValues; i++) {
+			available_values.add(i);
+		}
 
 		for (Variable variable : assingned_variables) {
 			if (variable.type == var.type) {
-				// System.out.println(getVariableName(variable) + ":"
-				// + variable.assignedValue);
 				int index = available_values.indexOf(variable.assignedValue);
 				available_values.remove(index);
 			}
 		}
 		return available_values;
-	}
-
-	public Variable getMRVBasedVariable() {
-		if (unassigned_variables.size() == 0)
-			return null;
-
-		// Index of Variable type with minimum assigned variables remaining
-		int minIndex = 0;
-		int[] type = new int[5];
-		for (Variable variable : unassigned_variables) {
-			switch (variable.type) {
-			case NATIONALITY:
-				type[0]++;
-				break;
-			case COLOR:
-				type[1]++;
-				break;
-			case PET:
-				type[2]++;
-				break;
-			case DRINK:
-				type[3]++;
-				break;
-			case FOOD:
-				type[4]++;
-				break;
-			}
-		}
-
-		for (int i = 0; i < 5; i++) {
-			// Not to consider the types for which all variables are assigned
-			if (type[i] == 0)
-				type[i] = 6;
-			if (type[minIndex] > type[i])
-				minIndex = i;
-		}
-
-		VariableType varType = null;
-		switch (minIndex) {
-		case 0:
-			varType = VariableType.NATIONALITY;
-			break;
-		case 1:
-			varType = VariableType.COLOR;
-			break;
-		case 2:
-			varType = VariableType.PET;
-			break;
-		case 3:
-			varType = VariableType.DRINK;
-			break;
-		case 4:
-			varType = VariableType.FOOD;
-			break;
-		}
-		for (Variable variable : unassigned_variables) {
-			if (variable.type == varType)
-				return variable;
-		}
-		return null;
 	}
 
 	@Override
