@@ -42,8 +42,8 @@ public class Csp_Solver {
 	}
 
 	public static void main(String args[]) {
-		int probNo = 1; // Integer.parseInt(args[0]);
-		int useMRV = 1; // Integer.parseInt(args[1]);
+		int probNo = Integer.parseInt(args[0]);
+		int useMRV = Integer.parseInt(args[1]);
 
 		Csp_Solver solver = new Csp_Solver();
 		CSP problem = null;

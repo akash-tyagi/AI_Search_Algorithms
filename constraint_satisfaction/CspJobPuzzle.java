@@ -32,15 +32,15 @@ public class CspJobPuzzle extends CSP {
 			variables.add(variable);
 		}
 		int i = 0;
-		unassigned_variables.get(i++).setValues(VariableType.JOBS, TEACHER, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, ACTOR, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, BOXER, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, CHEF, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, CLERK, -1);
 		unassigned_variables.get(i++).setValues(VariableType.JOBS, GUARD, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, NURSE, -1);
 		unassigned_variables.get(i++).setValues(VariableType.JOBS,
 				POLICE_OFFICER, -1);
-		unassigned_variables.get(i++).setValues(VariableType.JOBS, BOXER, -1);
-		unassigned_variables.get(i++).setValues(VariableType.JOBS, CLERK, -1);
-		unassigned_variables.get(i++).setValues(VariableType.JOBS, ACTOR, -1);
-		unassigned_variables.get(i++).setValues(VariableType.JOBS, NURSE, -1);
-		unassigned_variables.get(i++).setValues(VariableType.JOBS, CHEF, -1);
+		unassigned_variables.get(i++).setValues(VariableType.JOBS, TEACHER, -1);
 	}
 
 	@Override
@@ -56,13 +56,12 @@ public class CspJobPuzzle extends CSP {
 		if (unassigned_variables.size() == 0)
 			return null;
 
-		return unassigned_variables
-				.get((int) (Math.random() * unassigned_variables.size()));
+		return unassigned_variables.get(0);
 	}
 
 	@Override
 	public boolean isConsistent() {
-		int[] job_per_person = new int[4];
+		int[] job_per_person = new int[totalValues];
 		for (Variable var1 : assingned_variables) {
 			job_per_person[var1.assignedValue] = 1;
 			boolean isMale = (var1.assignedValue == STEVE || var1.assignedValue == PETE);

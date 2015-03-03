@@ -71,7 +71,7 @@ public class CSP {
 	}
 
 	public void printSolution() {
-		System.out.println("Expected Solution:$$$$$$$$$$$$$$$$$$$");
+		System.out.println("\nSolution:");
 		for (Variable variable : assingned_variables) {
 			System.out.println(getVariableName(variable) + " ----> "
 					+ getValueName(variable.assignedValue));
