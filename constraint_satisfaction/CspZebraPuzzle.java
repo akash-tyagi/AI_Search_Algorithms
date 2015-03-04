@@ -1,8 +1,5 @@
 package constraint_satisfaction;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CspZebraPuzzle extends CSP {
 
 	public static final int ENGLISH = 0;
@@ -43,11 +40,8 @@ public class CspZebraPuzzle extends CSP {
 
 	@Override
 	public void setupProblem() {
-		for (int i = 0; i < totalVariables; i++) {
-			Variable variable = new Variable();
-			unassigned_variables.add(variable);
-			variables.add(variable);
-		}
+		super.setupProblem();
+
 		int i = 0;
 		unassigned_variables.get(i++).setValues(VariableType.NATIONALITY,
 				ENGLISH, -1);
@@ -82,22 +76,6 @@ public class CspZebraPuzzle extends CSP {
 		unassigned_variables.get(i++).setValues(VariableType.PET, ZEBRA, -1);
 		unassigned_variables.get(i++).setValues(VariableType.PET, SNAIL, -1);
 		unassigned_variables.get(i++).setValues(VariableType.PET, FOX, -1);
-	}
-
-	@Override
-	public List<Integer> getAvailableValues(Variable var) {
-		List<Integer> available_values = new ArrayList<Integer>();
-		for (int i = 0; i < totalValues; i++) {
-			available_values.add(i);
-		}
-
-		for (Variable variable : assingned_variables) {
-			if (variable.type == var.type) {
-				int index = available_values.indexOf(variable.assignedValue);
-				available_values.remove(index);
-			}
-		}
-		return available_values;
 	}
 
 	@Override

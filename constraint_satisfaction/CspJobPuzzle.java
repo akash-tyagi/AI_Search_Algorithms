@@ -1,8 +1,5 @@
 package constraint_satisfaction;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CspJobPuzzle extends CSP {
 
 	public static final int CHEF = 0;
@@ -25,12 +22,7 @@ public class CspJobPuzzle extends CSP {
 	}
 
 	public void setupProblem() {
-
-		for (int i = 0; i < totalVariables; i++) {
-			Variable variable = new Variable();
-			unassigned_variables.add(variable);
-			variables.add(variable);
-		}
+		super.setupProblem();
 		int i = 0;
 		unassigned_variables.get(i++).setValues(VariableType.JOBS, ACTOR, -1);
 		unassigned_variables.get(i++).setValues(VariableType.JOBS, BOXER, -1);
@@ -41,22 +33,6 @@ public class CspJobPuzzle extends CSP {
 		unassigned_variables.get(i++).setValues(VariableType.JOBS,
 				POLICE_OFFICER, -1);
 		unassigned_variables.get(i++).setValues(VariableType.JOBS, TEACHER, -1);
-	}
-
-	@Override
-	public List<Integer> getAvailableValues(Variable var) {
-		List<Integer> available_values = new ArrayList<Integer>();
-		for (int i = 0; i < totalValues; i++) {
-			available_values.add(i);
-		}
-		return available_values;
-	}
-
-	public Variable getUnassignedVariable() {
-		if (unassigned_variables.size() == 0)
-			return null;
-
-		return unassigned_variables.get(0);
 	}
 
 	@Override

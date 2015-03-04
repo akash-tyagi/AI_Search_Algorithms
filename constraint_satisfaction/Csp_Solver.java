@@ -8,7 +8,7 @@ public class Csp_Solver {
 	static int iter = 1;
 
 	public boolean backTrack(CSP problem, int useMRV) {
-		System.out.println("\n" + iter++);
+		System.out.println("\nITERATION NUMBER:" + iter++);
 
 		Variable var = null;
 		if (useMRV == 0) {

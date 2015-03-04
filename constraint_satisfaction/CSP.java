@@ -24,6 +24,20 @@ public class CSP {
 	}
 
 	public void setupProblem() {
+		for (int i = 0; i < totalVariables; i++) {
+			Variable variable = new Variable();
+			unassigned_variables.add(variable);
+			variables.add(variable);
+		}
+	}
+
+	public List<Integer> getAvailableValues(Variable var) {
+		List<Integer> available_values = new ArrayList<Integer>();
+		for (int i = 0; i < totalValues; i++) {
+			available_values.add(i);
+		}
+
+		return available_values;
 	}
 
 	public Variable getUnassignedVariable() {
@@ -62,10 +76,6 @@ public class CSP {
 		return minConstVar;
 	}
 
-	public List<Integer> getAvailableValues(Variable var) {
-		return null;
-	}
-
 	public boolean isConsistent() {
 		return false;
 	}
@@ -92,6 +102,7 @@ public class CSP {
 		areDuplicates();
 	}
 
+	/*Function is used for testing purposes only*/
 	public void areDuplicates() {
 		Set<Variable> setUnassignedVariables = new HashSet<Variable>(
 				unassigned_variables);
