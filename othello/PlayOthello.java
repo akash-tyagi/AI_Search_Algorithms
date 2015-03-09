@@ -6,12 +6,14 @@ import java.util.Scanner;
 public class PlayOthello {
 	public static void main(String args[]) {
 		int size = 6;// Integer.parseInt(args[0]);
-		int depth = 1;// Integer.parseInt(args[1]);
+		char opponent = 'B';// args[1];
+		int depth = 4;// Integer.parseInt(args[2]);
 
 		Board board = new Board(size);
 		board.init();
 		board.printBoard();
 
+		// board.testBoard();
 		// board.makeMove('B', 4, 1);
 		// System.out.println("######" + board.getScore());
 		// // board.printBoard();
@@ -45,17 +47,18 @@ public class PlayOthello {
 			} else {
 				String[] parse = command.split(" ");
 				if (parse[0].equals("move")) {
-					System.out.println("assup");
+					board.move(parse[1].charAt(0), depth);
 				} else if (parse[0].equals("put")) {
+					System.out.println("Make Move");
 					board.makeMove(parse[1].charAt(0),
 							Integer.parseInt(parse[2]),
 							Integer.parseInt(parse[3]));
+					board.printBoard();
 				}
 			}
-			board.printBoard();
+
 		}
 		scanIn.close();
-		System.out.println(command);
-
 	}
+
 }

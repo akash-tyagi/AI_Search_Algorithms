@@ -9,5 +9,5 @@ public class Move {
 	}
 	int x;
 	int y;
-	int score;
+	double score;
 }

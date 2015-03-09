@@ -34,6 +34,7 @@ public class Board {
 
 	public void printBoard() {
 		for (int row = 0; row < size; row++) {
+			System.out.print("# ");
 			for (int col = 0; col < size; col++) {
 				if (board[row][col] == WHITE)
 					System.out.print(WHITE);
@@ -44,7 +45,6 @@ public class Board {
 			}
 			System.out.println("");
 		}
-		System.out.println("");
 	}
 
 	public int getScore() {
@@ -58,6 +58,14 @@ public class Board {
 			}
 		}
 		return blackStones - whiteStones;
+	}
+
+	public int getScore(char P) {
+		int score = getScore();
+		if (P == 'W') {
+			score = -score;
+		}
+		return score;
 	}
 
 	public List<Move> legalMoves(char P) {
@@ -203,7 +211,128 @@ public class Board {
 			for (int j = min + 1; j < max; j++) {
 				board[row][j] = P;
 				// System.out.println("Flipping " + row + " " + j + " To:" + P);
-				printBoard();
+				// printBoard();
+			}
+		}
+	}
+
+	public void move(char P, int limit) {
+		System.out.println("---------------------------------------");
+		System.out.println("\n# making move for: " + P);
+		Move move = miniMax(limit, P);
+		if (move == null) {
+			System.out.println("# Forfeit");
+			return;
+		}
+		makeMove(P, move.x, move.y);
+		System.out.println("(" + move.x + "," + move.y + ")");
+		System.out.println("# score=" + getScore() + "\n");
+		printBoard();
+		System.out.println("---------------------------------------");
+	}
+
+	private Move miniMax(int limit, char P) {
+		List<Move> legalMoves = legalMoves(P);
+		if (legalMoves.size() == 0)
+			return null;
+
+		char O = (P == WHITE ? BLACK : WHITE);
+		int depth = 1;
+
+		for (Move move : legalMoves) {
+			char[][] tempBoardState = copyBoard();
+			// System.out.println("Considering State: #######");
+			makeMove(P, move.x, move.y);
+			move.score = minValue(O, depth, limit);
+			System.out.println("move:" + move.x + " : " + move.y + "  Score:"
+					+ move.score);
+			// printBoard();
+			board = tempBoardState;
+		}
+
+		Move maxMove = getMaxMove(legalMoves);
+		return maxMove;
+	}
+
+	private Move getMaxMove(List<Move> legalMoves) {
+		Move maxMove = legalMoves.get(0);
+		for (Move move : legalMoves) {
+			// System.out.println("value:" + move.score);
+			if (maxMove.score < move.score) {
+				maxMove = move;
+			}
+		}
+		// System.out.println("Max Value:" + maxMove.score);
+		return maxMove;
+	}
+
+	private double minValue(char P, int depth, int limit) {
+		char O = (P == WHITE ? BLACK : WHITE);
+		List<Move> legalMoves = legalMoves(P);
+		if (depth == limit || legalMoves.size() == 0) {
+			return boardEvalScore(P);
+		}
+
+		for (Move move : legalMoves) {
+			char[][] tempBoardState = copyBoard();
+			makeMove(P, move.x, move.y);
+			// System.out.println("Considering Min Value for level:" + depth);
+			// System.out.println("move: MINI:" + move.x + ":" + move.y
+			// + "  Score:" + getScore());
+			// printBoard();
+			move.score = maxValue(O, depth + 1, limit);
+			board = tempBoardState;
+		}
+
+		double min = Double.MAX_VALUE;
+		for (Move move : legalMoves) {
+			if (min > move.score) {
+				min = move.score;
+			}
+		}
+		// System.out.println("Returning Min Value:" + min + " Level:" + depth);
+		return min;
+	}
+
+	private double maxValue(char P, int depth, int limit) {
+		char O = (P == WHITE ? BLACK : WHITE);
+		List<Move> legalMoves = legalMoves(P);
+		if (depth == limit || legalMoves.size() == 0) {
+			return boardEvalScore(P);
+		}
+
+		for (Move move : legalMoves) {
+			char[][] tempBoardState = copyBoard();
+			makeMove(P, move.x, move.y);
+			// System.out.println("move: MAx:" + move.x + ":" + move.y);
+			move.score = maxValue(O, depth + 1, limit);
+			board = tempBoardState;
+		}
+
+		Move maxMove = getMaxMove(legalMoves);
+		return maxMove.score;
+	}
+
+	private double boardEvalScore(char P) {
+		return getScore(P);
+	}
+
+	public void testBoard() {
+		int iter = 0;
+		while (true) {
+			move('B', 2);
+			move('W', 1);
+			iter += 2;
+			// printBoard();
+			if (legalMoves('B').size() == 0 && legalMoves('W').size() == 0) {
+				System.out.println("GameOver " + iter);
+				int score = getScore();
+				if (score > 0) {
+					System.out.println("# Black Won " + score);
+				} else if (score < 0) {
+					System.out.println("# White Won " + score);
+				}
+				break;
 			}
 		}
 	}
