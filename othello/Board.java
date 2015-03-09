@@ -86,8 +86,16 @@ public class Board {
 						|| isOpponent(P, row + 1, col - 1)) {
 					char[][] temp = copyBoard();
 					int currScore = getScore();
+					// System.out.println("X:" + row + " Y:" + col + " P:" + P);
 					makeMove(P, row, col);
 					if (Math.abs(currScore - getScore()) > 1) {
+						// System.out.println("Added");
+						// if (P == 'W' && row == 2 && col == 3) {
+						// System.out.println("$$$$$$$$$$$$$");
+						// printBoard();
+						// board = temp;
+						// printBoard();
+						// }
 						Move move = new Move(row, col, getScore());
 						legalMoves.add(move);
 					}
@@ -219,6 +227,7 @@ public class Board {
 	public void move(char P, int limit) {
 		System.out.println("---------------------------------------");
 		System.out.println("\n# making move for: " + P);
+		System.out.println("Limit" + limit);
 		Move move = miniMax(limit, P);
 		if (move == null) {
 			System.out.println("# Forfeit");
@@ -237,19 +246,18 @@ public class Board {
 			return null;
 
 		char O = (P == WHITE ? BLACK : WHITE);
-		int depth = 1;
+		int depth = 0;
 
 		for (Move move : legalMoves) {
 			char[][] tempBoardState = copyBoard();
-			// System.out.println("Considering State: #######");
+			System.out.println("\n\nConsidering State: #######");
 			makeMove(P, move.x, move.y);
-			move.score = minValue(O, depth, limit);
-			System.out.println("move:" + move.x + " : " + move.y + "  Score:"
+			printBoard();
+			move.score = minValue(O, depth + 1, limit);
+			System.out.println("move:(" + move.x + "," + move.y + ")  Score:"
 					+ move.score);
-			// printBoard();
 			board = tempBoardState;
 		}
-
 		Move maxMove = getMaxMove(legalMoves);
 		return maxMove;
 	}
@@ -257,12 +265,12 @@ public class Board {
 	private Move getMaxMove(List<Move> legalMoves) {
 		Move maxMove = legalMoves.get(0);
 		for (Move move : legalMoves) {
-			// System.out.println("value:" + move.score);
+			System.out.println("value:" + move.score);
 			if (maxMove.score < move.score) {
 				maxMove = move;
 			}
 		}
-		// System.out.println("Max Value:" + maxMove.score);
+		System.out.println("Max Value:" + maxMove.score);
 		return maxMove;
 	}
 
@@ -270,17 +278,21 @@ public class Board {
 		char O = (P == WHITE ? BLACK : WHITE);
 		List<Move> legalMoves = legalMoves(P);
 		if (depth == limit || legalMoves.size() == 0) {
-			return boardEvalScore(P);
+			if (depth == limit)
+				System.out.println("Limit Reached" + depth + " " + limit);
+			else
+				System.out.println("No legalmove");
+			return boardEvalScore(O);
 		}
 
 		for (Move move : legalMoves) {
 			char[][] tempBoardState = copyBoard();
 			makeMove(P, move.x, move.y);
-			// System.out.println("Considering Min Value for level:" + depth);
-			// System.out.println("move: MINI:" + move.x + ":" + move.y
-			// + "  Score:" + getScore());
-			// printBoard();
+			System.out.println(" MIN LEVEL-----------" + depth);
+			printBoard();
 			move.score = maxValue(O, depth + 1, limit);
+			System.out.println("move: MINI:" + move.x + ":" + move.y
+					+ "  Score:" + move.score);
 			board = tempBoardState;
 		}
 
@@ -298,14 +310,21 @@ public class Board {
 		char O = (P == WHITE ? BLACK : WHITE);
 		List<Move> legalMoves = legalMoves(P);
 		if (depth == limit || legalMoves.size() == 0) {
+			if (depth == limit)
+				System.out.println("Limit Reached" + depth + " " + limit);
+			else
+				System.out.println("No legalmove");
 			return boardEvalScore(P);
 		}
 
 		for (Move move : legalMoves) {
 			char[][] tempBoardState = copyBoard();
 			makeMove(P, move.x, move.y);
-			// System.out.println("move: MAx:" + move.x + ":" + move.y);
-			move.score = maxValue(O, depth + 1, limit);
+			System.out.println("MAX LEVEL --------" + depth);
+			printBoard();
+			move.score = minValue(O, depth + 1, limit);
+			System.out.println("move: MINI:" + move.x + ":" + move.y
+					+ "  Score:" + move.score);
 			board = tempBoardState;
 		}
 
@@ -314,14 +333,17 @@ public class Board {
 	}
 
 	private double boardEvalScore(char P) {
+		if (P == 'W') {
+			// System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&");
+		}
 		return getScore(P);
 	}
 
 	public void testBoard() {
 		int iter = 0;
 		while (true) {
-			move('B', 2);
-			move('W', 1);
+			move('B', 1);
+			move('W', 3);
 			iter += 2;
 			// printBoard();
 			if (legalMoves('B').size() == 0 && legalMoves('W').size() == 0) {
