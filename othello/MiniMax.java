@@ -3,15 +3,16 @@ package othello;
 import java.util.List;
 
 public class MiniMax {
-	char main;
+	char maxChar;
 	Board2 board;
 
 	public MiniMax(Board2 board, char main) {
 		this.board = board;
-		this.main = main;
+		this.maxChar = main;
 	}
 
 	public Move miniMax(int limit, char P) {
+		System.out.println("# Making move for " + P);
 		List<Move> legalMoves = board.legalMoves(P);
 		if (legalMoves.size() == 0)
 			return null;
@@ -21,13 +22,11 @@ public class MiniMax {
 
 		for (Move move : legalMoves) {
 			char[][] tempBoardState = board.copyBoard();
-			System.out.println("\n\nConsidering State: #######");
 			board.makeMove(P, move.x, move.y);
-			board.printBoard();
 			move.score = minValue(O, depth + 1, limit);
-			System.out.println("move:(" + move.x + "," + move.y + ")  Score:"
-					+ move.score);
 			board.board = tempBoardState;
+			System.out.println("# considering: (" + move.x + "," + move.y
+					+ "),mm=" + move.score);
 		}
 		Move maxMove = getMaxMove(legalMoves);
 		return maxMove;
@@ -36,12 +35,10 @@ public class MiniMax {
 	private Move getMaxMove(List<Move> legalMoves) {
 		Move maxMove = legalMoves.get(0);
 		for (Move move : legalMoves) {
-			System.out.println("value:" + move.score);
 			if (maxMove.score < move.score) {
 				maxMove = move;
 			}
 		}
-		System.out.println("Max Value:" + maxMove.score);
 		return maxMove;
 	}
 
@@ -55,11 +52,7 @@ public class MiniMax {
 		for (Move move : legalMoves) {
 			char[][] tempBoardState = board.copyBoard();
 			board.makeMove(P, move.x, move.y);
-			System.out.println(" MIN LEVEL-----------" + depth);
-			board.printBoard();
 			move.score = maxValue(O, depth + 1, limit);
-			System.out.println("move: MINI:" + move.x + ":" + move.y
-					+ "  Score:" + move.score);
 			board.board = tempBoardState;
 		}
 
@@ -82,11 +75,7 @@ public class MiniMax {
 		for (Move move : legalMoves) {
 			char[][] tempBoardState = board.copyBoard();
 			board.makeMove(P, move.x, move.y);
-			System.out.println("MAX LEVEL --------" + depth);
-			board.printBoard();
 			move.score = minValue(O, depth + 1, limit);
-			System.out.println("move: MINI:" + move.x + ":" + move.y
-					+ "  Score:" + move.score);
 			board.board = tempBoardState;
 		}
 
@@ -114,7 +103,7 @@ public class MiniMax {
 
 		for (int x = 0; x < board.size; x++)
 			for (int y = 0; y < board.size; y++) {
-				if (board.board[x][y] == main)
+				if (board.board[x][y] == maxChar)
 					rating += eval_table[x][y];
 			}
 
@@ -142,17 +131,18 @@ public class MiniMax {
 		}
 		int stability = blackStability - whiteStability;
 
-		if (main == 'W') {
+		if (maxChar == 'W') {
 			mobility = -1 * mobility;
 			diskDiff = -1 * diskDiff;
 			stability = -1 * stability;
 		}
 
-		int score = rating + mobility + diskDiff;
+		if (maxChar == 'W')
+			return 7 * rating + mobility + 2 * diskDiff + 10 * stability;
 
-		if (main == 'W')
-			return score;
-		return score;
+		else
+			return 10 * rating + 4 * mobility + diskDiff;
+
 	}
 
 	private boolean stableDirection(int i, int j, int v, int h) {

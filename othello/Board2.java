@@ -7,15 +7,14 @@ public class Board2 {
 	public int size;
 	char[][] board;
 	int[][] evel_board;
-	char opponent;
 	public static char WHITE = 'W';
 	public static char BLACK = 'B';
 	public static char EMPTY = '\0';
+	public int totalPieces = 0;
 
 	public Board2(int size, char opponent) {
 		this.size = size;
 		board = new char[size][size];
-		this.opponent = opponent;
 	}
 
 	public void init() {
@@ -25,7 +24,7 @@ public class Board2 {
 		board[mid][mid + 1] = BLACK;
 		board[mid + 1][mid] = BLACK;
 		board[mid + 1][mid + 1] = WHITE;
-
+		totalPieces = 4;
 	}
 
 	public void reset() {
@@ -34,6 +33,7 @@ public class Board2 {
 				board[row][col] = EMPTY;
 			}
 		}
+		totalPieces = 0;
 	}
 
 	public void printBoard() {
@@ -62,14 +62,6 @@ public class Board2 {
 			}
 		}
 		return blackStones - whiteStones;
-	}
-
-	public int getScore(char P) {
-		int score = getScore();
-		if (P == 'W') {
-			score = -score;
-		}
-		return score;
 	}
 
 	public List<Move> legalMoves(char P) {
@@ -178,8 +170,6 @@ public class Board2 {
 				if (row == row2)
 					break;
 				board[row][col] = P;
-				// System.out.println("Flipping " + row + " " + col + " To:" +
-				// P);
 			}
 		}
 
@@ -200,7 +190,6 @@ public class Board2 {
 
 		if (legal) {
 			for (int i = min + 1; i < max; i++) {
-				// System.out.println("Flipping " + i + " " + col + " To:" + P);
 				board[i][col] = P;
 			}
 		}
@@ -222,38 +211,31 @@ public class Board2 {
 		if (legal) {
 			for (int j = min + 1; j < max; j++) {
 				board[row][j] = P;
-				// System.out.println("Flipping " + row + " " + j + " To:" + P);
-				// printBoard();
 			}
 		}
 	}
 
-	public void move(char P, int limit) {
-		System.out.println("---------------------------------------");
-		System.out.println("\n# making move for: " + P);
-		System.out.println("Limit" + limit);
-
+	public void tryMove(char P, int limit) {
 		Move move = null;
 		MiniMax miniMax = new MiniMax(this, P);
 		move = miniMax.miniMax(limit, P);
 		if (move == null) {
-			System.out.println("# Forfeit");
+			System.out.println("forfeit");
 			return;
 		}
-		makeMove(P, move.x, move.y);
 		System.out.println("(" + move.x + "," + move.y + ")");
-		System.out.println("# score=" + getScore() + "\n");
-		printBoard();
-		System.out.println("---------------------------------------");
+		makeMove(P, move.x, move.y);
+		totalPieces++;
 	}
 
 	public void testBoard() {
 		int iter = 0;
 		while (true) {
-			move('B', 3);
-			move('W', 3);
+			tryMove('B', 3);
+			tryMove('W', 3);
 			iter += 2;
-
+			printBoard();
+			System.out.println("Current Score:" + getScore());
 			if (legalMoves('B').size() == 0 && legalMoves('W').size() == 0) {
 				System.out.println("GameOver " + iter);
 				int score = getScore();
