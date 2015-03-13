@@ -3,12 +3,30 @@ package othello;
 import java.util.List;
 
 public class MiniMax {
-	char maxChar;
-	Board2 board;
+	public char mainChar;
+	public Board2 board;
+	int[][] eval_table;
+	int size;
 
-	public MiniMax(Board2 board, char main) {
-		this.board = board;
-		this.maxChar = main;
+	public MiniMax(int size) {
+		this.size = size;
+
+		eval_table = new int[size][size];
+		eval_table[0][0] = eval_table[0][size - 1] = eval_table[size - 1][0] = eval_table[size - 1][size - 1] = 99;
+		for (int i = 0, j = size - 1; i < j; i++, j--) {
+			eval_table[1][i] = eval_table[1][j] = -size + 2 * i;
+			eval_table[size - 2][i] = eval_table[size - 2][j] = -size + 2 * i;
+			eval_table[i][1] = eval_table[j][1] = -size + 2 * i;
+			eval_table[i][size - 2] = eval_table[j][size - 2] = -size + 2 * i;
+		}
+
+		for (int x = 0; x < size; x++) {
+			for (int i = 0, j = size - 1; i < j; i++, j--) {
+				if (eval_table[x][i] == 0) {
+					eval_table[x][i] = eval_table[x][j] = size - 2 * i;
+				}
+			}
+		}
 	}
 
 	public Move miniMax(int limit, char P) {
@@ -19,68 +37,83 @@ public class MiniMax {
 
 		char O = (P == board.WHITE ? board.BLACK : board.WHITE);
 		int depth = 0;
+		double alpha = Double.MIN_VALUE;
+		double beta = Double.MAX_VALUE;
+		Move max = legalMoves.get(0);
 
 		for (Move move : legalMoves) {
 			char[][] tempBoardState = board.copyBoard();
 			board.makeMove(P, move.x, move.y);
-			move.score = minValue(O, depth + 1, limit);
+			move.score = minValue(O, depth + 1, limit, alpha, beta);
 			board.board = tempBoardState;
 			System.out.println("# considering: (" + move.x + "," + move.y
 					+ "),mm=" + move.score);
+
+			if (move.score > max.score)
+				max = move;
+
+			if (max.score >= beta)
+				return max;
+
+			if (move.score > alpha)
+				alpha = move.score;
 		}
-		Move maxMove = getMaxMove(legalMoves);
-		return maxMove;
+		return max;
 	}
 
-	private Move getMaxMove(List<Move> legalMoves) {
-		Move maxMove = legalMoves.get(0);
-		for (Move move : legalMoves) {
-			if (maxMove.score < move.score) {
-				maxMove = move;
-			}
-		}
-		return maxMove;
-	}
-
-	private double minValue(char P, int depth, int limit) {
+	private double minValue(char P, int depth, int limit, double alpha,
+			double beta) {
 		char O = (P == board.WHITE ? board.BLACK : board.WHITE);
 		List<Move> legalMoves = board.legalMoves(P);
 		if (depth == limit || legalMoves.size() == 0) {
 			return boardEvalScore();
-		}
-
-		for (Move move : legalMoves) {
-			char[][] tempBoardState = board.copyBoard();
-			board.makeMove(P, move.x, move.y);
-			move.score = maxValue(O, depth + 1, limit);
-			board.board = tempBoardState;
 		}
 
 		double min = Double.MAX_VALUE;
 		for (Move move : legalMoves) {
-			if (min > move.score) {
+			char[][] tempBoardState = board.copyBoard();
+			board.makeMove(P, move.x, move.y);
+			move.score = maxValue(O, depth + 1, limit, alpha, beta);
+			board.board = tempBoardState;
+
+			if (move.score < min)
 				min = move.score;
-			}
+
+			if (min <= alpha)
+				return min;
+
+			if (move.score < beta)
+				beta = move.score;
 		}
+
 		return min;
 	}
 
-	private double maxValue(char P, int depth, int limit) {
+	private double maxValue(char P, int depth, int limit, double alpha,
+			double beta) {
 		char O = (P == board.WHITE ? board.BLACK : board.WHITE);
 		List<Move> legalMoves = board.legalMoves(P);
 		if (depth == limit || legalMoves.size() == 0) {
 			return boardEvalScore();
 		}
 
+		double max = Double.MIN_VALUE;
 		for (Move move : legalMoves) {
 			char[][] tempBoardState = board.copyBoard();
 			board.makeMove(P, move.x, move.y);
-			move.score = minValue(O, depth + 1, limit);
+			move.score = minValue(O, depth + 1, limit, alpha, beta);
 			board.board = tempBoardState;
-		}
 
-		Move maxMove = getMaxMove(legalMoves);
-		return maxMove.score;
+			if (move.score > max)
+				max = move.score;
+
+			if (max >= beta)
+				return max;
+
+			if (move.score > alpha)
+				alpha = move.score;
+		}
+		return max;
 	}
 
 	private double boardEvalScore() {
@@ -94,22 +127,15 @@ public class MiniMax {
 		int diskDiff = board.getScore();
 
 		int rating = 0;
-		int[][] eval_table = { { 99, -8, 8, 6, 6, 8, -8, 99 },
-				{ -8, -24, -4, -3, -3, -4, -24, -8 },
-				{ 8, -4, 7, 4, 4, 7, -4, 8 }, { 6, -3, 4, 0, 0, 4, -3, 6 },
-				{ 6, -3, 4, 0, 0, 4, -3, 6 }, { 8, -4, 7, 4, 4, 7, -4, 8 },
-				{ -8, -24, -4, -3, -3, -4, -24, -8 },
-				{ 99, -8, 8, 6, 6, 8, -8, 99 } };
-
-		for (int x = 0; x < board.size; x++)
-			for (int y = 0; y < board.size; y++) {
-				if (board.board[x][y] == maxChar)
+		for (int x = 0; x < size; x++)
+			for (int y = 0; y < size; y++) {
+				if (board.board[x][y] == mainChar)
 					rating += eval_table[x][y];
 			}
 
 		int blackStability = 0, whiteStability = 0;
-		for (int i = 0; i < board.size; i++) {
-			for (int j = 0; j < board.size; j++) {
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
 				if (board.board[i][j] != board.EMPTY) {
 					if ((stableDirection(i, j, 1, 0) || stableDirection(i, j,
 							-1, 0))
@@ -130,18 +156,18 @@ public class MiniMax {
 			}
 		}
 		int stability = blackStability - whiteStability;
-
-		if (maxChar == 'W') {
+		if (mainChar == 'W') {
 			mobility = -1 * mobility;
 			diskDiff = -1 * diskDiff;
 			stability = -1 * stability;
 		}
 
-		if (maxChar == 'W')
-			return 7 * rating + mobility + 2 * diskDiff + 10 * stability;
+		if (mainChar == 'W')
+			return rating * 100 + 100 * mobility + 10 * diskDiff + 50
+					* stability;
 
 		else
-			return 10 * rating + 4 * mobility + diskDiff;
+			return rating + 100 * mobility + 10 * diskDiff + 50 * stability;
 
 	}
 
@@ -149,8 +175,8 @@ public class MiniMax {
 
 		char color = board.board[i][j];
 		boolean stable = true;
-		while (i + v < board.size && j + h < board.size && i + v >= 0
-				&& j + h >= 0 && stable) {
+		while (i + v < size && j + h < size && i + v >= 0 && j + h >= 0
+				&& stable) {
 
 			if (board.board[i + v][j + h] != color) {
 				stable = false;

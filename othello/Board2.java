@@ -11,10 +11,12 @@ public class Board2 {
 	public static char BLACK = 'B';
 	public static char EMPTY = '\0';
 	public int totalPieces = 0;
+	MiniMax miniMax = null;
 
 	public Board2(int size, char opponent) {
 		this.size = size;
 		board = new char[size][size];
+		miniMax = new MiniMax(size);
 	}
 
 	public void init() {
@@ -82,16 +84,8 @@ public class Board2 {
 						|| isOpponent(P, row + 1, col - 1)) {
 					char[][] temp = copyBoard();
 					int currScore = getScore();
-					// System.out.println("X:" + row + " Y:" + col + " P:" + P);
 					makeMove(P, row, col);
 					if (Math.abs(currScore - getScore()) > 1) {
-						// System.out.println("Added");
-						// if (P == 'W' && row == 2 && col == 3) {
-						// System.out.println("$$$$$$$$$$$$$");
-						// printBoard();
-						// board = temp;
-						// printBoard();
-						// }
 						Move move = new Move(row, col);
 						legalMoves.add(move);
 					}
@@ -217,7 +211,8 @@ public class Board2 {
 
 	public void tryMove(char P, int limit) {
 		Move move = null;
-		MiniMax miniMax = new MiniMax(this, P);
+		miniMax.board = this;
+		miniMax.mainChar = P;
 		move = miniMax.miniMax(limit, P);
 		if (move == null) {
 			System.out.println("forfeit");
@@ -229,14 +224,17 @@ public class Board2 {
 	}
 
 	public void testBoard() {
+		init();
 		int iter = 0;
 		while (true) {
 			tryMove('B', 3);
-			tryMove('W', 3);
+			tryMove('W', 4);
 			iter += 2;
 			printBoard();
 			System.out.println("Current Score:" + getScore());
-			if (legalMoves('B').size() == 0 && legalMoves('W').size() == 0) {
+			if (totalPieces >= size * size
+					|| (totalPieces > 0 && legalMoves('W').size() == 0 && legalMoves(
+							'B').size() == 0)) {
 				System.out.println("GameOver " + iter);
 				int score = getScore();
 				if (score > 0) {
