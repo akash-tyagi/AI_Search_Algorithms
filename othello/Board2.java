@@ -3,16 +3,19 @@ package othello;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Board {
+public class Board2 {
 	public int size;
 	char[][] board;
+	int[][] evel_board;
+	char opponent;
 	public static char WHITE = 'W';
 	public static char BLACK = 'B';
 	public static char EMPTY = '\0';
 
-	public Board(int size) {
+	public Board2(int size, char opponent) {
 		this.size = size;
 		board = new char[size][size];
+		this.opponent = opponent;
 	}
 
 	public void init() {
@@ -22,6 +25,7 @@ public class Board {
 		board[mid][mid + 1] = BLACK;
 		board[mid + 1][mid] = BLACK;
 		board[mid + 1][mid + 1] = WHITE;
+
 	}
 
 	public void reset() {
@@ -96,7 +100,7 @@ public class Board {
 						// board = temp;
 						// printBoard();
 						// }
-						Move move = new Move(row, col, getScore());
+						Move move = new Move(row, col);
 						legalMoves.add(move);
 					}
 					board = temp;
@@ -106,7 +110,7 @@ public class Board {
 		return legalMoves;
 	}
 
-	private char[][] copyBoard() {
+	public char[][] copyBoard() {
 		char[][] temp = new char[size][size];
 		for (int row = 0; row < size; row++) {
 			for (int col = 0; col < size; col++) {
@@ -228,7 +232,10 @@ public class Board {
 		System.out.println("---------------------------------------");
 		System.out.println("\n# making move for: " + P);
 		System.out.println("Limit" + limit);
-		Move move = miniMax(limit, P);
+
+		Move move = null;
+		MiniMax miniMax = new MiniMax(this, P);
+		move = miniMax.miniMax(limit, P);
 		if (move == null) {
 			System.out.println("# Forfeit");
 			return;
@@ -240,112 +247,13 @@ public class Board {
 		System.out.println("---------------------------------------");
 	}
 
-	private Move miniMax(int limit, char P) {
-		List<Move> legalMoves = legalMoves(P);
-		if (legalMoves.size() == 0)
-			return null;
-
-		char O = (P == WHITE ? BLACK : WHITE);
-		int depth = 0;
-
-		for (Move move : legalMoves) {
-			char[][] tempBoardState = copyBoard();
-			System.out.println("\n\nConsidering State: #######");
-			makeMove(P, move.x, move.y);
-			printBoard();
-			move.score = minValue(O, depth + 1, limit);
-			System.out.println("move:(" + move.x + "," + move.y + ")  Score:"
-					+ move.score);
-			board = tempBoardState;
-		}
-		Move maxMove = getMaxMove(legalMoves);
-		return maxMove;
-	}
-
-	private Move getMaxMove(List<Move> legalMoves) {
-		Move maxMove = legalMoves.get(0);
-		for (Move move : legalMoves) {
-			System.out.println("value:" + move.score);
-			if (maxMove.score < move.score) {
-				maxMove = move;
-			}
-		}
-		System.out.println("Max Value:" + maxMove.score);
-		return maxMove;
-	}
-
-	private double minValue(char P, int depth, int limit) {
-		char O = (P == WHITE ? BLACK : WHITE);
-		List<Move> legalMoves = legalMoves(P);
-		if (depth == limit || legalMoves.size() == 0) {
-			if (depth == limit)
-				System.out.println("Limit Reached" + depth + " " + limit);
-			else
-				System.out.println("No legalmove");
-			return boardEvalScore(O);
-		}
-
-		for (Move move : legalMoves) {
-			char[][] tempBoardState = copyBoard();
-			makeMove(P, move.x, move.y);
-			System.out.println(" MIN LEVEL-----------" + depth);
-			printBoard();
-			move.score = maxValue(O, depth + 1, limit);
-			System.out.println("move: MINI:" + move.x + ":" + move.y
-					+ "  Score:" + move.score);
-			board = tempBoardState;
-		}
-
-		double min = Double.MAX_VALUE;
-		for (Move move : legalMoves) {
-			if (min > move.score) {
-				min = move.score;
-			}
-		}
-		// System.out.println("Returning Min Value:" + min + " Level:" + depth);
-		return min;
-	}
-
-	private double maxValue(char P, int depth, int limit) {
-		char O = (P == WHITE ? BLACK : WHITE);
-		List<Move> legalMoves = legalMoves(P);
-		if (depth == limit || legalMoves.size() == 0) {
-			if (depth == limit)
-				System.out.println("Limit Reached" + depth + " " + limit);
-			else
-				System.out.println("No legalmove");
-			return boardEvalScore(P);
-		}
-
-		for (Move move : legalMoves) {
-			char[][] tempBoardState = copyBoard();
-			makeMove(P, move.x, move.y);
-			System.out.println("MAX LEVEL --------" + depth);
-			printBoard();
-			move.score = minValue(O, depth + 1, limit);
-			System.out.println("move: MINI:" + move.x + ":" + move.y
-					+ "  Score:" + move.score);
-			board = tempBoardState;
-		}
-
-		Move maxMove = getMaxMove(legalMoves);
-		return maxMove.score;
-	}
-
-	private double boardEvalScore(char P) {
-		if (P == 'W') {
-			// System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&");
-		}
-		return getScore(P);
-	}
-
 	public void testBoard() {
 		int iter = 0;
 		while (true) {
-			move('B', 1);
+			move('B', 3);
 			move('W', 3);
 			iter += 2;
-			// printBoard();
+
 			if (legalMoves('B').size() == 0 && legalMoves('W').size() == 0) {
 				System.out.println("GameOver " + iter);
 				int score = getScore();
