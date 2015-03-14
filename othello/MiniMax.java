@@ -4,7 +4,7 @@ import java.util.List;
 
 public class MiniMax {
 	public char mainChar;
-	public Board2 board;
+	public Board board;
 	int[][] eval_table;
 	int size;
 
@@ -162,12 +162,7 @@ public class MiniMax {
 			stability = -1 * stability;
 		}
 
-		if (mainChar == 'W')
-			return rating * 100 + 100 * mobility + 10 * diskDiff + 50
-					* stability;
-
-		else
-			return rating + 100 * mobility + 10 * diskDiff + 50 * stability;
+		return rating + 100 * mobility + 10 * diskDiff + 50 * stability;
 
 	}
 

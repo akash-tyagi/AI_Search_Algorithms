@@ -3,7 +3,7 @@ package othello;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Board2 {
+public class Board {
 	public int size;
 	char[][] board;
 	int[][] evel_board;
@@ -13,7 +13,7 @@ public class Board2 {
 	public int totalPieces = 0;
 	MiniMax miniMax = null;
 
-	public Board2(int size, char opponent) {
+	public Board(int size, char opponent) {
 		this.size = size;
 		board = new char[size][size];
 		miniMax = new MiniMax(size);
