@@ -20,7 +20,7 @@ public class PropTheormProver {
 		// clause.print();
 		// System.out.println("");
 		// }
-		
+
 		Resolution resolution = new Resolution();
 		resolution.resolution(clauses);
 	}
@@ -31,7 +31,7 @@ public class PropTheormProver {
 		List<Clause> clauses = new ArrayList<Clause>();
 
 		for (String line : Files.readAllLines(Paths.get(file_name), charset)) {
-			if (line.contains("#"))
+			if (line.contains("#") || line.isEmpty())
 				continue;
 
 			String words[] = line.split(" ");
