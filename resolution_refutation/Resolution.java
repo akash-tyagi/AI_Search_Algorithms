@@ -43,7 +43,7 @@ public class Resolution {
 
 	}
 
-	public void resolution(List<Clause> clauses) {
+	public Clause resolution(List<Clause> clauses) {
 		ResPair resPair = null;
 		init();
 		int id = 0;
@@ -53,6 +53,7 @@ public class Resolution {
 			if (isOldClause(clause1))
 				continue;
 			clause1.id = id++;
+
 			mapClause.put(getKey(clause1), clause1);
 			System.out.println(clause1.id + ": (" + clause1.toString() + ")");
 
@@ -63,7 +64,8 @@ public class Resolution {
 			}
 		}
 
-		System.out.println("-----------------");
+		System.out.println("------------------------------");
+
 		while (candidate_queue.isEmpty() != true) {
 			System.out.print("[Qsize=" + candidate_queue.size() + "]");
 			resPair = candidate_queue.pop();
@@ -75,7 +77,7 @@ public class Resolution {
 
 			if (resolvedClause.isEmpty()) {
 				System.out.println("Success - empty clause!");
-				return;
+				return resolvedClause;
 			}
 
 			if (isOldClause(resolvedClause))
@@ -84,9 +86,38 @@ public class Resolution {
 			mapClause.put(getKey(resolvedClause), resolvedClause);
 			for (String key : mapClause.keySet()) {
 				addResolvableResPairs(resolvedClause, mapClause.get(key));
-
 			}
+
+			if (candidate_queue.size() > 5000000)
+				break;
+
 		}
 		System.out.println("Failure");
+		return null;
+	}
+
+	void printProofTrace(Clause clause) {
+		if (clause == null)
+			return;
+		System.out.println("--------------------");
+		System.out.println("proof trace:");
+		proofTrace(clause, 1);
+	}
+
+	private void proofTrace(Clause clause, int depth) {
+		if (clause == null)
+			return;
+
+		for (int i = 0; i < depth; i++) {
+			System.out.print("  ");
+		}
+		System.out.print(clause.id + ": (" + clause.toString() + ") ");
+		if (clause.resClause1 == null)
+			System.out.println("input");
+		else
+			System.out.println("[" + clause.resClause1.id + ","
+					+ clause.resClause2.id + "]");
+		proofTrace(clause.resClause1, depth + 1);
+		proofTrace(clause.resClause2, depth + 1);
 	}
 }

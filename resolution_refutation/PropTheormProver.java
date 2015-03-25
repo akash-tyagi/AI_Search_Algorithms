@@ -16,13 +16,9 @@ public class PropTheormProver {
 		PropTheormProver prover = new PropTheormProver();
 		List<Clause> clauses = prover.readClausesFromFile(file_name);
 
-		// for (Clause clause : clauses) {
-		// clause.print();
-		// System.out.println("");
-		// }
-
 		Resolution resolution = new Resolution();
-		resolution.resolution(clauses);
+		Clause result = resolution.resolution(clauses);
+		resolution.printProofTrace(result);
 	}
 
 	private List<Clause> readClausesFromFile(String file_name)

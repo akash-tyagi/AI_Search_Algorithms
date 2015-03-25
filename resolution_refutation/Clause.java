@@ -6,9 +6,11 @@ import java.util.List;
 public class Clause {
 	public List<String> literals;
 	public int id;
+	public Clause resClause1, resClause2;
 
 	public Clause() {
 		literals = new ArrayList<String>();
+		resClause1 = resClause2 = null;
 	}
 
 	public void addLiteral(String literal) {
@@ -37,14 +39,11 @@ public class Clause {
 
 	public List<String> getOppositeLiterals(Clause clause) {
 		List<String> propositions = new ArrayList<String>();
-
 		for (String literal : literals) {
 			String negLiteral = getNegativeLiteral(literal);
-			if (clause.literals.contains(negLiteral)) {
-
-				// Add only the non-negative literal into the list
-				propositions.add(((literal.contains("-")) ? literal
-						.substring(1) : literal));
+			if (clause.literals.contains(negLiteral)
+					&& propositions.contains(literal) == false) {
+				propositions.add(literal);
 			}
 		}
 		return propositions;
