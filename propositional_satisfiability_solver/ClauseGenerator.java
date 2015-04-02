@@ -2,6 +2,8 @@ package propositional_satisfiability_solver;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClauseGenerator {
 	public static String[] person = { "Fa", "Fx", "Ch", "Gr" };
@@ -10,10 +12,10 @@ public class ClauseGenerator {
 	public static void main(String args[]) throws FileNotFoundException,
 			UnsupportedEncodingException {
 
-		// Script to get the locations at particular time
+		// Script to get the locations at particular time for each person
 		// Ti_person[i]L/R
-		// for (int i = 0; i < 4; i++) {
-		// for (int j = 0; j < 3; j++) {
+		// for (int i = 0; i < 8; i++) {
+		// for (int j = 0; j < 4; j++) {
 		// System.out.println(getLocation(i, j)[0] + " "
 		// + getLocation(i, j)[1]);
 		// System.out.println("-" + getLocation(i, j)[0] + " -"
@@ -21,9 +23,9 @@ public class ClauseGenerator {
 		// }
 		// }
 
-		// Script to capture actions
-		// for (int i = 0; i < 3; i++) {
-		// for (int j = 0; j < 3; j++) {
+		// Script to capture actions and location changes
+		// for (int i = 0; i < 7; i++) {
+		// for (int j = 0; j < 4; j++) {
 		// for (int k = 0; k < 2; k++) {
 		// // farmer movement only
 		// if (j == 0) {
@@ -46,11 +48,11 @@ public class ClauseGenerator {
 		// }
 		// }
 
-		// Indirect Clause Generator
-		// for (int i = 0; i < 3; i++) {
-		// for (int j = 0; j < 3; j++) {
+		// Indirect Clause Generator, actions and no changes to location
+		// for (int i = 0; i < 7; i++) {
+		// for (int j = 0; j < 4; j++) {
 		// for (int k = 0; k < 2; k++) {
-		// for (int l = 0; l < 3; l++) {
+		// for (int l = 0; l < 4; l++) {
 		// if (l == 0)
 		// continue;
 		// else if (j == 0) {
@@ -73,23 +75,35 @@ public class ClauseGenerator {
 		// }
 		// }
 
-		// actions for single action to be true
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				for (int l = j + 1; l < 3; l++) {
-					for (int k = 0; k < 2; k++) {
-						if (j == 0) {
-							System.out.println("-" + getFarmerActions(i)[k]
-									+ " -" + getActions(i, l)[k]);
-						} else {
-							System.out.println("-" + getActions(i, j)[k] + " -"
-									+ getActions(i, l)[k]);
-						}
+		// actions for atmost one action to be true
+//		for (int i = 0; i < 7; i++) {
+//			List<String> actions = getAllActions(i);
+//			for (int j = 0; j < actions.size(); j++) {
+//				for (int k = j + 1; k < actions.size(); k++) {
+//					System.out.println("-" + actions.get(j) + " -"
+//							+ actions.get(k));
+//				}
+//			}
+//		}
 
-					}
-				}
+		// actions for atleast one action to be true
+		for (int i = 0; i < 7; i++) {
+			List<String> actions = getAllActions(i);
+			String action = "";
+			for (int j = 0; j < actions.size(); j++) {
+				action += actions.get(j) + " ";
 			}
+			System.out.println(action);
+		}
 
+		// chicken and fox can not be on the same side without farmer
+		for (int i = 0; i < 8; i++) {
+			for (int k = 0; k < 2; k++) {
+				System.out.println("-" + getLocation(i, 1)[k] + " -"
+						+ getLocation(i, 2)[k] + " " + getLocation(i, 0)[k]);
+				System.out.println("-" + getLocation(i, 2)[k] + " -"
+						+ getLocation(i, 3)[k] + " " + getLocation(i, 0)[k]);
+			}
 		}
 	}
 
@@ -114,6 +128,21 @@ public class ClauseGenerator {
 		String actL = "T" + i + "_mv_no_LR";
 		String actR = "T" + i + "_mv_no_RL";
 		String[] actions = { actL, actR };
+		return actions;
+	}
+
+	private static List<String> getAllActions(int i) {
+
+		List<String> actions = new ArrayList<String>();
+		for (int j = 0; j < 4; j++) {
+			for (int k = 0; k < 2; k++) {
+				if (j == 0) {
+					actions.add(getFarmerActions(i)[k]);
+				} else {
+					actions.add(getActions(i, j)[k]);
+				}
+			}
+		}
 		return actions;
 	}
 
