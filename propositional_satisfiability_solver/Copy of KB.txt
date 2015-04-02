@@ -1,0 +1,46 @@
+#initial positions
+T0_FaL
+T0_FxL
+T0_ChL
+
+#position at particular time
+T0_FaL T0_FaR
+-T0_FaL -T0_FaR
+T0_FxL T0_FxR
+-T0_FxL -T0_FxR
+T1_FaL T1_FaR
+-T1_FaL -T1_FaR
+T1_FxL T1_FxR
+-T1_FxL -T1_FxR
+
+#
+T0_mv_no_LR T0_mv_Fx_LR
+
+#actions
+-T0_mv_no_LR T0_FaL
+-T0_mv_no_LR T1_FaR
+-T0_mv_no_RL T0_FaR
+-T0_mv_no_RL T1_FaL
+-T0_mv_Fx_LR T0_FxL
+-T0_mv_Fx_LR T0_FaL
+-T0_mv_Fx_LR T1_FxR
+-T0_mv_Fx_LR T1_FaR
+-T0_mv_Fx_RL T0_FxR
+-T0_mv_Fx_RL T0_FaR
+-T0_mv_Fx_RL T1_FxL
+-T0_mv_Fx_RL T1_FaL
+
+-T0_mv_no_LR T0_FxL
+-T0_mv_no_LR T1_FxL
+-T0_mv_no_RL T0_FxR
+-T0_mv_no_RL T1_FxR
+
+
+#contingent clauses
+
+
+
+#goal state
+T3_FaR
+T3_FxR
+T3_ChR
