@@ -41,19 +41,6 @@ public class DPLL {
 		return false;
 	}
 
-	public boolean dpllSatisfiable() {
-		Map<String, Boolean> model = new HashMap<String, Boolean>();
-		iter = 0;
-
-		System.out.println("initial clauses:");
-		for (Clause clause : clauses) {
-			clause.toString();
-		}
-		System.out.println("---------------------------");
-
-		return dpll(literals, model);
-	}
-
 	public void printModel(Map<String, Boolean> model) {
 		System.out.print("model={");
 		for (String key : model.keySet()) {
@@ -69,8 +56,13 @@ public class DPLL {
 		System.out.println("solution:");
 		Map<String, Boolean> map = new TreeMap<String, Boolean>(model);
 		for (String key : map.keySet()) {
+			System.out.println(key + "=" + map.get(key).toString());
+		}
+		System.out.println("----------------------");
+		System.out.println("true props:");
+		for (String key : map.keySet()) {
 			if (map.get(key).toString().equals("true"))
-				System.out.println(key + "=" + map.get(key).toString());
+				System.out.println(key);
 		}
 	}
 
@@ -104,9 +96,7 @@ public class DPLL {
 		String res = null;
 		if (pureSymbols.size() > 0) {
 			for (String literal : pureSymbols) {
-				if (res == null)
-					res = literal;
-				// System.out.println("Pure Literals:" + literal);
+				res = literal;
 			}
 		}
 		return res;
@@ -118,12 +108,25 @@ public class DPLL {
 			String uniLiteral = clause.getUnitLiteral(model);
 			if (clause.getValueEvenIfAllLiteralUndefined(model) != Values.TRUE
 					&& uniLiteral != null) {
-				System.out.print("---unit clause on:");
+				System.out.print("unit clause on:");
 				clause.print();
 				return uniLiteral;
 			}
 		}
 		return null;
+	}
+
+	public boolean dpllSatisfiable() {
+		Map<String, Boolean> model = new HashMap<String, Boolean>();
+		iter = 0;
+
+		System.out.println("initial clauses:");
+		for (Clause clause : clauses) {
+			clause.toString();
+		}
+		System.out.println("---------------------------");
+
+		return dpll(literals, model);
 	}
 
 	private boolean dpll(List<String> symbols, Map<String, Boolean> model) {
@@ -145,7 +148,7 @@ public class DPLL {
 			boolean value = (unitSymbol.contains("-") ? false : true);
 			newModel.put(Clause.getPositiveLiteral(unitSymbol), value);
 			rest.remove(unitSymbol);
-			System.out.println("!!!!!!!!!!pure symbol: "
+			System.out.println("pure_symbol: "
 					+ Clause.getPositiveLiteral(unitSymbol) + "=" + value
 					+ "\n");
 			iter++;
@@ -158,7 +161,7 @@ public class DPLL {
 			boolean value = (uniLiteral.contains("-") ? false : true);
 			newModel.put(Clause.getPositiveLiteral(uniLiteral), value);
 			rest.remove(Clause.getPositiveLiteral(uniLiteral));
-			System.out.println("##########implies "
+			System.out.println("implies "
 					+ Clause.getPositiveLiteral(uniLiteral) + "=" + value
 					+ "\n");
 			iter++;

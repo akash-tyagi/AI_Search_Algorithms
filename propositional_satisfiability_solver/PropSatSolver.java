@@ -18,21 +18,19 @@ public class PropSatSolver {
 		PropSatSolver prover = new PropSatSolver();
 		prover.readClausesFromFile(file_name);
 
-		System.out.println("symbols:");
+		System.out.println("Props:");
 		for (String symbol : prover.symbols) {
-			System.out.println(symbol);
+			System.out.print(symbol + " ");
 		}
 
-		System.out.println("\nClauses:");
+		System.out.println("\n\nInitial Clauses:");
 		for (Clause clause : prover.clauses) {
 			clause.print();
 		}
 
 		DPLL dpll = new DPLL(prover.symbols, prover.clauses);
-		if (dpll.dpllSatisfiable()) {
-			System.out.println("\n\nSuccess");
-		} else {
-			System.out.println("\n\nFail");
+		if (dpll.dpllSatisfiable() == false) {
+			System.out.println("\n\nFailed");
 		}
 	}
 
