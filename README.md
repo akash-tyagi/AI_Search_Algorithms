@@ -8,4 +8,5 @@ Programs done so far:<br/>
 4.Constrain Satisfactions: Making CSP solver using backtracking and MRV heuristics.<br/>
 5.Othello: Intelligent othello game playing using minimax and alpha-beta pruning.<br/>
 6.Resolution Refutation: Solving Sammy's Sport shop problem by a propositional theorem using resolution refutation.<br/>
- 
+7.DPLL:  Using boolean satisfiability solver to solver Farmer, Fox, Chicken and Grain problem.<br/>
+8.Goal Regression: Simplified goal regression algorithm for doing planning in Blocksworld.<br/>

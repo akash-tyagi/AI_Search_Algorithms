@@ -120,12 +120,7 @@ public class DPLL {
 		Map<String, Boolean> model = new HashMap<String, Boolean>();
 		iter = 0;
 
-		System.out.println("initial clauses:");
-		for (Clause clause : clauses) {
-			clause.toString();
-		}
 		System.out.println("---------------------------");
-
 		return dpll(literals, model);
 	}
 

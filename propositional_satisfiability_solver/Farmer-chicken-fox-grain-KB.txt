@@ -70,7 +70,7 @@ T7_ChL T7_ChR
 T7_GrL T7_GrR
 -T7_GrL -T7_GrR
 
-#atleast one action is true
+#at-least one action should be at a time true
 T0_mv_no_LR T0_mv_no_RL T0_mv_Fx_LR T0_mv_Fx_RL T0_mv_Ch_LR T0_mv_Ch_RL T0_mv_Gr_LR T0_mv_Gr_RL 
 T1_mv_no_LR T1_mv_no_RL T1_mv_Fx_LR T1_mv_Fx_RL T1_mv_Ch_LR T1_mv_Ch_RL T1_mv_Gr_LR T1_mv_Gr_RL 
 T2_mv_no_LR T2_mv_no_RL T2_mv_Fx_LR T2_mv_Fx_RL T2_mv_Ch_LR T2_mv_Ch_RL T2_mv_Gr_LR T2_mv_Gr_RL 
@@ -79,7 +79,7 @@ T4_mv_no_LR T4_mv_no_RL T4_mv_Fx_LR T4_mv_Fx_RL T4_mv_Ch_LR T4_mv_Ch_RL T4_mv_Gr
 T5_mv_no_LR T5_mv_no_RL T5_mv_Fx_LR T5_mv_Fx_RL T5_mv_Ch_LR T5_mv_Ch_RL T5_mv_Gr_LR T5_mv_Gr_RL 
 T6_mv_no_LR T6_mv_no_RL T6_mv_Fx_LR T6_mv_Fx_RL T6_mv_Ch_LR T6_mv_Ch_RL T6_mv_Gr_LR T6_mv_Gr_RL 
 
-#atmost one action is true at a time
+#at-most one action should be true at a time
 -T0_mv_no_LR -T0_mv_no_RL
 -T0_mv_no_LR -T0_mv_Fx_LR
 -T0_mv_no_LR -T0_mv_Fx_RL
@@ -279,7 +279,7 @@ T6_mv_no_LR T6_mv_no_RL T6_mv_Fx_LR T6_mv_Fx_RL T6_mv_Ch_LR T6_mv_Ch_RL T6_mv_Gr
 
 
 
-#actions
+#action and reaction clauses
 -T0_mv_no_LR T0_FaL
 -T0_mv_no_LR T1_FaR
 -T0_mv_no_RL T0_FaR
@@ -480,7 +480,7 @@ T6_mv_no_LR T6_mv_no_RL T6_mv_Fx_LR T6_mv_Fx_RL T6_mv_Ch_LR T6_mv_Ch_RL T6_mv_Gr
 
 
 
-#contingent clauses
+#contingent clauses or indirect clauses
 -T0_mv_no_LR -T0_FxL T1_FxL
 -T0_mv_no_LR T0_FxL -T1_FxL
 -T0_mv_no_LR -T0_ChL T1_ChL
@@ -736,6 +736,7 @@ T6_mv_no_LR T6_mv_no_RL T6_mv_Fx_LR T6_mv_Fx_RL T6_mv_Ch_LR T6_mv_Ch_RL T6_mv_Gr
 
 
 #chicken and grain can not be left alone
+#fox and chicken can not be left alone
 -T0_FxL -T0_ChL T0_FaL
 -T0_ChL -T0_GrL T0_FaL
 -T0_FxR -T0_ChR T0_FaR

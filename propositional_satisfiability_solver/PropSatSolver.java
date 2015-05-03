@@ -13,6 +13,8 @@ public class PropSatSolver {
 
 	public static void main(String args[]) throws IOException {
 		String file_name = args[0];
+
+		// filename
 		file_name = "src/propositional_satisfiability_solver/" + file_name;
 
 		PropSatSolver prover = new PropSatSolver();
