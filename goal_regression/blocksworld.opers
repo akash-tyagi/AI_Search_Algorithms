@@ -1,0 +1,94 @@
+OPER pickup(a,b)
+precond: clear(a) on(a,b) gripper_empty()
+addlist: holding(a) clear(b)
+dellist: clear(a) on(a,b) gripper_empty()
+conflict: on(b,a) on(a,b) holding(b) on(c,a) on(a,c) holding(c) on(d,a) on(a,d) holding(d)
+END
+
+
+OPER pickup(a,c)
+precond: clear(a) on(a,c) gripper_empty()
+addlist: holding(a) clear(c)
+dellist: clear(a) on(a,c) gripper_empty()
+conflict: on(b,a) on(a,b) holding(b) on(c,a) on(a,c) holding(c) on(d,a) on(a,d) holding(d)
+END
+
+
+OPER pickup(a,d)
+precond: clear(a) on(a,d) gripper_empty()
+addlist: holding(a) clear(d)
+dellist: clear(a) on(a,d) gripper_empty()
+conflict: on(b,a) on(a,b) holding(b) on(c,a) on(a,c) holding(c) on(d,a) on(a,d) holding(d)
+END
+
+
+OPER pickup(b,a)
+precond: clear(b) on(b,a) gripper_empty()
+addlist: holding(b) clear(a)
+dellist: clear(b) on(b,a) gripper_empty()
+conflict: on(a,b) on(b,a) holding(a) on(c,b) on(b,c) holding(c) on(d,b) on(b,d) holding(d)
+END
+
+
+OPER pickup(b,c)
+precond: clear(b) on(b,c) gripper_empty()
+addlist: holding(b) clear(c)
+dellist: clear(b) on(b,c) gripper_empty()
+conflict: on(a,b) on(b,a) holding(a) on(c,b) on(b,c) holding(c) on(d,b) on(b,d) holding(d)
+END
+
+
+OPER pickup(b,d)
+precond: clear(b) on(b,d) gripper_empty()
+addlist: holding(b) clear(d)
+dellist: clear(b) on(b,d) gripper_empty()
+conflict: on(a,b) on(b,a) holding(a) on(c,b) on(b,c) holding(c) on(d,b) on(b,d) holding(d)
+END
+
+
+OPER pickup(c,a)
+precond: clear(c) on(c,a) gripper_empty()
+addlist: holding(c) clear(a)
+dellist: clear(c) on(c,a) gripper_empty()
+conflict: on(a,c) on(c,a) holding(a) on(b,c) on(c,b) holding(b) on(d,c) on(c,d) holding(d)
+END
+
+
+OPER pickup(c,b)
+precond: clear(c) on(c,b) gripper_empty()
+addlist: holding(c) clear(b)
+dellist: clear(c) on(c,b) gripper_empty()
+conflict: on(a,c) on(c,a) holding(a) on(b,c) on(c,b) holding(b) on(d,c) on(c,d) holding(d)
+END
+
+
+OPER pickup(c,d)
+precond: clear(c) on(c,d) gripper_empty()
+addlist: holding(c) clear(d)
+dellist: clear(c) on(c,d) gripper_empty()
+conflict: on(a,c) on(c,a) holding(a) on(b,c) on(c,b) holding(b) on(d,c) on(c,d) holding(d)
+END
+
+
+OPER pickup(d,a)
+precond: clear(d) on(d,a) gripper_empty()
+addlist: holding(d) clear(a)
+dellist: clear(d) on(d,a) gripper_empty()
+conflict: on(a,d) on(d,a) holding(a) on(b,d) on(d,b) holding(b) on(c,d) on(d,c) holding(c)
+END
+
+
+OPER pickup(d,b)
+precond: clear(d) on(d,b) gripper_empty()
+addlist: holding(d) clear(b)
+dellist: clear(d) on(d,b) gripper_empty()
+conflict: on(a,d) on(d,a) holding(a) on(b,d) on(d,b) holding(b) on(c,d) on(d,c) holding(c)
+END
+
+
+OPER pickup(d,c)
+precond: clear(d) on(d,c) gripper_empty()
+addlist: holding(d) clear(c)
+dellist: clear(d) on(d,c) gripper_empty()
+conflict: on(a,d) on(d,a) holding(a) on(b,d) on(d,b) holding(b) on(c,d) on(d,c) holding(c)
+END
