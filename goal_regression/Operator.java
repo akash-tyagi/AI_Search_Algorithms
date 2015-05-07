@@ -7,24 +7,29 @@ public class Operator {
 	public String name;
 	public List<String> precondList, addList, conflictList, delList;
 
-	boolean isOperatorRelevant(String goal) {
-		if (addList.contains(goal))
+	boolean isOperatorRelevant(List<String> goalsList) {
+		List<String> newGoals = new ArrayList<String>(goalsList);
+		newGoals.removeAll(addList);
+		if (newGoals.size() < goalsList.size())
 			return true;
 		return false;
 	}
 
 	boolean isOperatorConsistent(List<String> goals) {
-		// List a,b; union is caculating as a+(b-a);
-		List<String> uniqueConflictList = new ArrayList<String>(conflictList);
-		uniqueConflictList.removeAll(delList);
-
 		List<String> unionList = new ArrayList<String>(delList);
-		unionList.addAll(uniqueConflictList);
+		unionList.addAll(conflictList);
 
 		List<String> conflictingGoals = new ArrayList<String>(goals);
 		conflictingGoals.removeAll(unionList);
 		if (goals.size() == conflictingGoals.size())
 			return true;
+
+		// System.out.println("inconsistent:" + name);
+		// printList(goals);
+		// System.out.println("2");
+		// printList(conflictingGoals);
+		// System.out.println("1");
+		// printList(unionList);
 		return false;
 	}
 

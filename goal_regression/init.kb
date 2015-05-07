@@ -1,6 +1,6 @@
 clear(a)
 on(a,b)
-on(a,table)
+on(b,table)
 clear(c)
 on(c,d)
 on(d,table)

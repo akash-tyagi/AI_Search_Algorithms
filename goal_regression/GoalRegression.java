@@ -21,23 +21,42 @@ public class GoalRegression {
 		System.out.println("Initializing Goal Regression...\n");
 		List<Operator> operators = goalRegression
 				.readOpersFromFile("src/goal_regression/blocksworld.opers");
+		System.out.println("Total Operators:" + operators.size());
+
 		List<String> kb = goalRegression.readKB("src/goal_regression/init.kb");
-		goalRegression.goalRegression(goals, operators, kb);
+		List<String> success = goalRegression.goalRegression(goals, operators,
+				kb);
+
+		if (success.size() != 0) {
+			System.out.println("\n\nSolution Found");
+			System.out.println("plan:");
+			for (String string : success) {
+				System.out.println(string);
+			}
+		} else {
+			System.out.println("Solution Not Found !! ");
+		}
 	}
 
 	public Goal getGoals() throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		System.out.print("Enter Goal :");
-		// String g = br.readLine();
-		String g = "holding(a)";
-		Goal goal = new Goal(g);
+		System.out.print("Enter Goals :");
+		String[] g = br.readLine().split(",");
+
+		List<String> gList = new ArrayList<String>();
+		for(int i=0;i<g)
+		
+		gList.add("on(d,b)");
+		gList.add("on(a,d)");
+		Goal goal = new Goal(gList);
 		return goal;
 	}
 
 	public List<String> goalRegression(Goal goals, List<Operator> operators,
 			List<String> kb) {
 		MyPriorityQueue queue = new MyPriorityQueue();
-		QueueNode queueNode = new QueueNode(goals, new ArrayList<String>());
+		QueueNode queueNode = new QueueNode(goals, new ArrayList<String>(),
+				null);
 		queue.push(queueNode);
 		int iter = 1;
 
@@ -46,28 +65,28 @@ public class GoalRegression {
 
 			queueNode = queue.pop();
 			if (queueNode.goal.isGoalSatisfied(kb) == true) {
-				System.out.println("Success!!");
 				return queueNode.plan;
 			}
 
 			List<String> goalsList = queueNode.goal.goalList;
+			if (queueNode.oper != null)
+				System.out.println("context: " + queueNode.oper.name);
 			System.out.println("goal stack:" + goalsList.toString());
 
 			for (String goal : goalsList) {
 				for (Operator oper : operators) {
-					if (oper.isOperatorRelevant(goal)
+					if (oper.isOperatorRelevant(goalsList)
 							&& oper.isOperatorConsistent(goalsList)) {
-						System.out.println("Considering using " + oper.name
-								+ " to achieve " + goal);
 						List<String> newGoals = oper.regress(goalsList);
 						List<String> newPlan = new ArrayList<String>(
 								queueNode.plan);
 						newPlan.add(oper.name);
-
 						if (hashTable.containsKey(newPlan.toString()) == false) {
+							System.out.println("Considering using " + oper.name
+									+ " to achieve " + goal);
 							hashTable.put(newPlan.toString(), true);
 							queue.push(new QueueNode(new Goal(newGoals),
-									newPlan));
+									newPlan, oper));
 						}
 					}
 				}
@@ -122,7 +141,7 @@ public class GoalRegression {
 					listType = 4;
 				} else if (literal.contains("END")) {
 					operators.add(oper);
-					oper.printOperator();
+					// oper.printOperator();
 					oper = null;
 					listType = 5;
 				}
