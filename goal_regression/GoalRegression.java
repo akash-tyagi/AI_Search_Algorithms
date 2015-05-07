@@ -21,14 +21,13 @@ public class GoalRegression {
 		System.out.println("Initializing Goal Regression...\n");
 		List<Operator> operators = goalRegression
 				.readOpersFromFile("src/goal_regression/blocksworld.opers");
-		System.out.println("Total Operators:" + operators.size());
-
 		List<String> kb = goalRegression.readKB("src/goal_regression/init.kb");
+
 		List<String> success = goalRegression.goalRegression(goals, operators,
 				kb);
 
 		if (success.size() != 0) {
-			System.out.println("\n\nSolution Found");
+			System.out.println("Solution Found");
 			System.out.println("plan:");
 			for (String string : success) {
 				System.out.println(string);
@@ -41,13 +40,13 @@ public class GoalRegression {
 	public Goal getGoals() throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		System.out.print("Enter Goals :");
-		String[] g = br.readLine().split(",");
+		String[] g = br.readLine().split(" ");
 
 		List<String> gList = new ArrayList<String>();
-		for(int i=0;i<g)
-		
-		gList.add("on(d,b)");
-		gList.add("on(a,d)");
+		for (int i = 0; i < g.length; i++) {
+			gList.add(g[i]);
+		}
+
 		Goal goal = new Goal(gList);
 		return goal;
 	}
@@ -67,7 +66,6 @@ public class GoalRegression {
 			if (queueNode.goal.isGoalSatisfied(kb) == true) {
 				return queueNode.plan;
 			}
-
 			List<String> goalsList = queueNode.goal.goalList;
 			if (queueNode.oper != null)
 				System.out.println("context: " + queueNode.oper.name);
@@ -75,24 +73,27 @@ public class GoalRegression {
 
 			for (String goal : goalsList) {
 				for (Operator oper : operators) {
+
 					if (oper.isOperatorRelevant(goalsList)
 							&& oper.isOperatorConsistent(goalsList)) {
+
 						List<String> newGoals = oper.regress(goalsList);
 						List<String> newPlan = new ArrayList<String>(
 								queueNode.plan);
 						newPlan.add(oper.name);
+
 						if (hashTable.containsKey(newPlan.toString()) == false) {
 							System.out.println("Considering using " + oper.name
 									+ " to achieve " + goal);
 							hashTable.put(newPlan.toString(), true);
 							queue.push(new QueueNode(new Goal(newGoals),
 									newPlan, oper));
+
 						}
 					}
 				}
 			}
 		}
-		System.out.println("Fail!!");
 		return null;
 	}
 

@@ -23,13 +23,6 @@ public class Operator {
 		conflictingGoals.removeAll(unionList);
 		if (goals.size() == conflictingGoals.size())
 			return true;
-
-		// System.out.println("inconsistent:" + name);
-		// printList(goals);
-		// System.out.println("2");
-		// printList(conflictingGoals);
-		// System.out.println("1");
-		// printList(unionList);
 		return false;
 	}
 
@@ -60,19 +53,6 @@ public class Operator {
 		for (String string : list) {
 			System.out.print(string + " ");
 		}
-		System.out.println("");
-	}
-
-	public void printOperator() {
-		System.out.println("OPER: " + name);
-		System.out.print("precond: ");
-		printList(precondList);
-		System.out.print("addlist: ");
-		printList(addList);
-		System.out.print("dellist: ");
-		printList(delList);
-		System.out.print("conflict: ");
-		printList(conflictList);
 		System.out.println("");
 	}
 

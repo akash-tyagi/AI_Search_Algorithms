@@ -1,5 +1,3 @@
-
-
 OPER pickup(a,b)
 precond: clear(a) on(a,b) gripper_empty()
 addlist: holding(a) clear(b)
