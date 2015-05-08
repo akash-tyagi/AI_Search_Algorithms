@@ -26,7 +26,7 @@ public class GoalRegression {
 		List<String> success = goalRegression.goalRegression(goals, operators,
 				kb);
 
-		if (success.size() != 0) {
+		if (success != null) {
 			System.out.println("Solution Found");
 			System.out.println("plan:");
 			for (String string : success) {
